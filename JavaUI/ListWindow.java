@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 
@@ -19,17 +19,13 @@ public class ListWindow extends JFrame implements ActionListener
 {
 	protected JLabel logo;
 	protected JLabel notifications;
+	protected int notificationsNum;
 	protected JButton home;
 	protected JButton alphaSort;
 	protected JButton expirSort;
 	protected JButton delete;
 	
-	protected JPanel topBar;
-	protected JPanel bottomBar;
-	protected JPanel sortButtons;
-	protected JPanel list;
-	protected JPanel item;
-	protected JPanel itemDetails;
+	protected JPanel listPane;
 	
 	public ListWindow(String name)
 	{
@@ -40,64 +36,48 @@ public class ListWindow extends JFrame implements ActionListener
 	
 	public void addComponentsToPane(Container pane)
 	{
-		pane.setLayout(new BorderLayout());
-		topBar=new JPanel(new BorderLayout());
-		bottomBar=new JPanel(new BorderLayout());
-		sortButtons=new JPanel(new FlowLayout());
-		list=new JPanel();
-		list.setLayout(new BoxLayout(list,BoxLayout.Y_AXIS));
-		list.setBorder(BorderFactory.createLineBorder(Color.black));
-		item=new JPanel(new BorderLayout());
-		itemDetails=new JPanel(new FlowLayout());
+		pane.setLayout(null);
+		listPane=new JPanel();
+		listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
+		
+		JScrollPane scroller=new JScrollPane(listPane);
+		scroller.setBounds(0, 26, 800, 420);
+		pane.add(scroller);
 		
 		logo=new JLabel("Kitchen Wizard");
-		topBar.add(logo,BorderLayout.LINE_START);
+    	logo.setBounds(0, 0, 118, 22);
+    	pane.add(logo);
 		
-		notifications=new JLabel("0 Notifications");
-		topBar.add(notifications,BorderLayout.LINE_END);
+    	JSeparator line=new JSeparator(JSeparator.HORIZONTAL);
+    	line.setBounds(0, 25, 800, 18);
+    	pane.add(line);
 		
-		topBar.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.PAGE_END);
+		notifications=new JLabel(notificationsNum+" Notifications");
+		notifications.setBounds(700, 3, 90, 15);
+		pane.add(notifications);
 		
-		pane.add(topBar, BorderLayout.PAGE_START);
-		
-		JLabel picture=new JLabel("Picture of item");
-		JLabel name=new JLabel("Item "+"Example");
-		JLabel expir=new JLabel("Expiration Date: "+1+"/"+1+"/"+1);
-		
-		delete=new JButton("X");
-		itemDetails.add(name);
-		itemDetails.add(expir);
-		item.add(picture,BorderLayout.LINE_START);
-		item.add(itemDetails,BorderLayout.CENTER);
-		item.add(delete,BorderLayout.LINE_END);
-		list.add(item);
-		
-		picture=new JLabel("Picture of item");
-		name=new JLabel("Item "+"Example");
-		expir=new JLabel("Expiration Date: "+1+"/"+1+"/"+1);
-		
-		delete=new JButton("X");
-		itemDetails.add(name);
-		itemDetails.add(expir);
-		item.add(picture,BorderLayout.LINE_START);
-		item.add(itemDetails,BorderLayout.CENTER);
-		item.add(delete,BorderLayout.LINE_END);
-		list.add(item);
-		/*for(int i=0;i<5;i++)
+		for(int i=0;i<20;i++)
 		{
+			JPanel item=new JPanel();
+			item.setLayout(new BorderLayout());
+			
 			JLabel picture=new JLabel("Picture of item");
 			JLabel name=new JLabel("Item "+i);
 			JLabel expir=new JLabel("Expiration Date: "+i+"/"+i+"/"+i);
-			delete=new JButton("X");
+			JPanel itemDetails=new JPanel();
 			itemDetails.add(name);
 			itemDetails.add(expir);
+			delete=new JButton("X");
+			
 			item.add(picture,BorderLayout.LINE_START);
 			item.add(itemDetails,BorderLayout.CENTER);
 			item.add(delete,BorderLayout.LINE_END);
-			list.add(item);
-		}*/
-		
-		pane.add(list, BorderLayout.CENTER);
+			item.setBorder(BorderFactory.createLineBorder(Color.black));
+			JButton itemButton=new JButton();
+			listPane.add(item);
+			
+			
+		}
 		
 		home=new JButton("Home");
 		home.addActionListener(new ActionListener()
@@ -108,15 +88,31 @@ public class ListWindow extends JFrame implements ActionListener
         		dispose();
         	}
         });
-		bottomBar.add(home,BorderLayout.LINE_START);
+		
+		home=new JButton("Home");
+		home.addActionListener(new ActionListener()
+        {
+        	public void actionPerformed(ActionEvent e)
+        	{
+        		HomeWindow.createAndShowGUI();
+        		dispose();
+        	}
+        });
+		home.setBounds(5, 453, 75, 25);
+		pane.add(home);
 		
 		alphaSort=new JButton("ABC");
-		sortButtons.add(alphaSort);
-		expirSort=new JButton("Expiration");
-		sortButtons.add(expirSort);
-		bottomBar.add(sortButtons,BorderLayout.LINE_END);
+		alphaSort.setBounds(600, 453, 75, 25);
+		pane.add(alphaSort);
 		
-		pane.add(bottomBar, BorderLayout.PAGE_END);
+		expirSort=new JButton("Expir");
+		expirSort.setBounds(695, 453, 75, 25);
+		pane.add(expirSort);
+		
+		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
+    	line2.setBounds(0, 450, 800, 18);
+    	pane.add(line2);
+		
 		
 	}
 	public void actionPerformed(ActionEvent e) 

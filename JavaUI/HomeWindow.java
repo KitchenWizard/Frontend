@@ -17,11 +17,10 @@ public class HomeWindow extends JFrame implements ActionListener
 	protected JButton addButton;
 	protected JButton removeButton;
 	protected JButton listButton;
-	public JPanel buttons;
+	protected int notificationsNum;
 	
 	protected JLabel logo;
 	protected JLabel notifications;
-	public JPanel topBar;
 	
 	
 	public HomeWindow(String name)
@@ -33,18 +32,19 @@ public class HomeWindow extends JFrame implements ActionListener
 	
 	public void addComponentsToPane(Container pane)
 	{
-		pane.setLayout(new BorderLayout());
-		topBar=new JPanel(new BorderLayout());
-		buttons=new JPanel();
-		buttons.setLayout(new BoxLayout(buttons,BoxLayout.PAGE_AXIS));
+		pane.setLayout(null);
 	
 		logo=new JLabel("Kitchen Wizard");
-		topBar.add(logo,BorderLayout.LINE_START);
+    	logo.setBounds(0, 0, 118, 22);
+    	pane.add(logo);
 		
-		notifications=new JLabel("0 Notifications");
-		topBar.add(notifications,BorderLayout.LINE_END);
+    	JSeparator line=new JSeparator(JSeparator.HORIZONTAL);
+    	line.setBounds(0, 25, 800, 18);
+    	pane.add(line);
 		
-		topBar.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.PAGE_END);
+		notifications=new JLabel(notificationsNum+" Notifications");
+		notifications.setBounds(700, 3, 90, 15);
+		pane.add(notifications);
 		
     	addButton=new JButton("Add Items");
     	addButton.addActionListener(new ActionListener()
@@ -55,9 +55,8 @@ public class HomeWindow extends JFrame implements ActionListener
     			dispose();
     		}
     	});
-    	buttons.add(addButton);
-    	
-		buttons.add(new JLabel(" "));
+    	addButton.setBounds(275, 100, 250, 50);
+    	pane.add(addButton);
 		
     	removeButton=new JButton("Remove Items");
     	removeButton.addActionListener(new ActionListener()
@@ -69,9 +68,8 @@ public class HomeWindow extends JFrame implements ActionListener
     		}
     		
     	});
-    	buttons.add(removeButton);
-    	
-		buttons.add(new JLabel(" "));
+    	removeButton.setBounds(275, 180, 250, 50);
+    	pane.add(removeButton);
 		
     	listButton=new JButton("View List of Items");
     	listButton.addActionListener(new ActionListener()
@@ -82,10 +80,16 @@ public class HomeWindow extends JFrame implements ActionListener
     			dispose();
     		}
     	});
-    	buttons.add(listButton);
+    	listButton.setBounds(275, 260, 250, 50);
+    	pane.add(listButton);
     	
-    	pane.add(topBar,BorderLayout.PAGE_START);
-    	pane.add(buttons, BorderLayout.LINE_START);
+    	JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
+    	line2.setBounds(0, 450, 800, 18);
+    	pane.add(line2);
+    	
+    	//JSeparator line3=new JSeparator(JSeparator.VERTICAL);
+    	//line3.setBounds(399, 0, 3, 480);
+    	//pane.add(line3);
 	}
 	public void actionPerformed(ActionEvent arg0) 
 	{

@@ -17,9 +17,7 @@ public class RemoveWindow extends JFrame implements ActionListener
 	protected JLabel notifications;
 	protected JLabel removeLabel;
 	protected JButton home;
-	
-	protected JPanel topBar;
-	protected JPanel bottomBar;
+	protected int notificationsNum;
 	
 	public RemoveWindow(String name)
 	{
@@ -30,22 +28,24 @@ public class RemoveWindow extends JFrame implements ActionListener
 	
 	public void addComponentsToPane(Container pane)
 	{
-		pane.setLayout(new BorderLayout());
-		topBar=new JPanel(new BorderLayout());
-		bottomBar=new JPanel(new BorderLayout());
+		pane.setLayout(null);
 		
 		logo=new JLabel("Kitchen Wizard");
-		topBar.add(logo,BorderLayout.LINE_START);
+    	logo.setBounds(0, 0, 118, 22);
+    	pane.add(logo);
 		
-		notifications=new JLabel("0 Notifications");
-		topBar.add(notifications,BorderLayout.LINE_END);
+    	JSeparator line=new JSeparator(JSeparator.HORIZONTAL);
+    	line.setBounds(0, 25, 800, 18);
+    	pane.add(line);
 		
-		topBar.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.PAGE_END);
-		
-		pane.add(topBar, BorderLayout.PAGE_START);
+		notifications=new JLabel(notificationsNum+" Notifications");
+		notifications.setBounds(700, 3, 90, 15);
+		pane.add(notifications);
 		
 		removeLabel=new JLabel("Scan Item Now");
 		pane.add(removeLabel,BorderLayout.CENTER);
+		removeLabel.setBounds(350, 100, 175, 38);
+		pane.add(removeLabel);
 		
 		home=new JButton("Home");
 		home.addActionListener(new ActionListener()
@@ -56,8 +56,12 @@ public class RemoveWindow extends JFrame implements ActionListener
         		dispose();
         	}
         });
-		bottomBar.add(home,BorderLayout.LINE_START);
-		pane.add(bottomBar, BorderLayout.PAGE_END);
+		home.setBounds(5, 453, 75, 25);
+		pane.add(home);
+		
+		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
+    	line2.setBounds(0, 450, 800, 18);
+    	pane.add(line2);
 		
 	}
 	public void actionPerformed(ActionEvent e) 

@@ -21,12 +21,12 @@ public class MainWindow extends JFrame implements ActionListener
     protected JPasswordField passwordField;
     protected JLabel usernameLabel;
     protected JLabel passwordLabel;
+    protected JLabel login;
 	public JButton confirm;
+	public JButton register;
 	public JLabel wrongPass;
-	public JPanel LogIn;
 	
 	protected JLabel logo;
-	public JPanel topBar;
 	
 	protected String username;
 	protected char[] password;
@@ -41,16 +41,27 @@ public class MainWindow extends JFrame implements ActionListener
 	
 	public void addComponentsToPane(Container pane)
 	{
-		pane.setLayout(new BorderLayout());
-    	LogIn=new JPanel(new FlowLayout());
-    	topBar=new JPanel(new BorderLayout());
+		pane.setLayout(null);
     	
     	logo=new JLabel("Kitchen Wizard");
-    	topBar.add(logo,BorderLayout.LINE_START);
-    	topBar.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.PAGE_END);
+    	logo.setBounds(0, 0, 118, 22);
+    	pane.add(logo);
 		
+    	JSeparator line=new JSeparator(JSeparator.HORIZONTAL);
+    	line.setBounds(0, 25, 800, 18);
+    	pane.add(line);
+    	
+    	//JSeparator line2=new JSeparator(JSeparator.VERTICAL);
+    	//line2.setBounds(399, 0, 3, 480);
+    	//pane.add(line2);
+    	
+    	login=new JLabel("Please Log In");
+    	login.setBounds(360, 50, 140, 30);
+    	pane.add(login);
+    	
     	usernameLabel=new JLabel("Username");
-    	LogIn.add(usernameLabel);
+    	usernameLabel.setBounds(100,125, 100, 25);
+    	pane.add(usernameLabel);
     	
     	usernameField=new JTextField(25);
         usernameField.addActionListener(new ActionListener()
@@ -60,10 +71,12 @@ public class MainWindow extends JFrame implements ActionListener
         		username=usernameField.getText();
         	}
         });
-        LogIn.add(usernameField);
+        usernameField.setBounds(165, 125, 150, 25);
+        pane.add(usernameField);
         
         passwordLabel=new JLabel("Password");
-        LogIn.add(passwordLabel);
+        passwordLabel.setBounds(350, 125, 100, 25);
+        pane.add(passwordLabel);
         
         passwordField=new JPasswordField(25);
         passwordField.addActionListener(new ActionListener()
@@ -73,18 +86,23 @@ public class MainWindow extends JFrame implements ActionListener
         		password=passwordField.getPassword();
         	}
         });
-        LogIn.add(passwordField);
+        passwordField.setBounds(415, 125, 150, 25);
+        pane.add(passwordField);
         
     	confirm=new JButton("Go");
     	confirm.addActionListener(this);
-    	LogIn.add(confirm);
+    	confirm.setBounds(600, 125, 75, 25);
+    	pane.add(confirm);
     	
     	wrongPass=new JLabel("Incorrect username or password");
     	wrongPass.setVisible(false);
-    	LogIn.add(wrongPass);
+    	wrongPass.setBounds(250,150,200,50);
+    	pane.add(wrongPass);
     	
-    	pane.add(topBar, BorderLayout.PAGE_START);
-    	pane.add(LogIn,BorderLayout.CENTER);
+    	register=new JButton("Register");
+    	register.setBounds(325, 240, 150, 40);
+    	pane.add(register);
+    	
     	
     	
 	}
