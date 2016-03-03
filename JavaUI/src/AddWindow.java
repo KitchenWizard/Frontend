@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,22 +6,29 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 
-public class RemoveWindow extends JFrame implements ActionListener
+public class AddWindow extends JFrame implements ActionListener
 {
 	protected JLabel logo;
-	protected JLabel notifications;
-	protected JLabel removeLabel;
+	protected JLabel addLabel;
 	protected JButton home;
+	protected JButton notificationsButton;
 	protected int notificationsNum;
 	
-	public RemoveWindow(String name)
+	protected JLabel picture;
+	protected JLabel name;
+	protected JLabel expir;
+	protected JTextField expirField;
+	
+	protected Container pane;
+	
+	public AddWindow(String name)
 	{
 		super(name);
-		this.getContentPane().setPreferredSize(new Dimension(800,480));
+		this.getContentPane().setPreferredSize(new Dimension(800,450));
 		
 	}
 	
@@ -37,15 +43,22 @@ public class RemoveWindow extends JFrame implements ActionListener
     	JSeparator line=new JSeparator(JSeparator.HORIZONTAL);
     	line.setBounds(0, 25, 800, 18);
     	pane.add(line);
+    	
+    	notificationsButton=new JButton(notificationsNum+" Notifications");
+		notificationsButton.setBounds(645, 3, 150, 20);
+		notificationsButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				NotificationsWindow.createAndShowGUI();
+				dispose();
+			}
+		});
+		pane.add(notificationsButton);
 		
-		notifications=new JLabel(notificationsNum+" Notifications");
-		notifications.setBounds(700, 3, 90, 15);
-		pane.add(notifications);
-		
-		removeLabel=new JLabel("Scan Item Now");
-		pane.add(removeLabel,BorderLayout.CENTER);
-		removeLabel.setBounds(350, 100, 175, 38);
-		pane.add(removeLabel);
+		addLabel=new JLabel("Scan Item Now");
+		addLabel.setBounds(350, 100, 175, 38);
+		pane.add(addLabel);
 		
 		home=new JButton("Home");
 		home.addActionListener(new ActionListener()
@@ -56,23 +69,36 @@ public class RemoveWindow extends JFrame implements ActionListener
         		dispose();
         	}
         });
-		home.setBounds(5, 453, 75, 25);
+		home.setBounds(5, 423, 75, 25);
 		pane.add(home);
 		
 		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
-    	line2.setBounds(0, 450, 800, 18);
+    	line2.setBounds(0, 420, 800, 18);
     	pane.add(line2);
 		
 	}
 	public void actionPerformed(ActionEvent e) 
 	{
+		addLabel.setVisible(false);
+		
+		picture.setBounds(150,50,350,350);
+		pane.add(picture);
+		
+		name.setBounds(400,50,100,50);
+		pane.add(name);
+		
+		expir.setBounds(400,100,250,50);
+		pane.add(expir);
+		
+		expirField.setBounds(650,100,145,50);
+		pane.add(expirField);
 		
 	}
 	
 	static void createAndShowGUI() 
 	{
 	        //Create and set up the window.
-	        RemoveWindow frame = new RemoveWindow("Kitchen Wizard - Remove Items Now");
+	        AddWindow frame = new AddWindow("Kitchen Wizard - Add Items Now");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        //Set up the content pane.
 	        frame.addComponentsToPane(frame.getContentPane());

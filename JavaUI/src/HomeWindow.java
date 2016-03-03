@@ -1,14 +1,11 @@
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 
@@ -17,16 +14,17 @@ public class HomeWindow extends JFrame implements ActionListener
 	protected JButton addButton;
 	protected JButton removeButton;
 	protected JButton listButton;
+	protected JButton recipesButton;
 	protected int notificationsNum;
+	protected JButton notificationsButton;
 	
 	protected JLabel logo;
-	protected JLabel notifications;
 	
 	
 	public HomeWindow(String name)
 	{
 		super(name);
-		this.getContentPane().setPreferredSize(new Dimension(800,480));
+		this.getContentPane().setPreferredSize(new Dimension(800,450));
 		
 	}
 	
@@ -42,9 +40,17 @@ public class HomeWindow extends JFrame implements ActionListener
     	line.setBounds(0, 25, 800, 18);
     	pane.add(line);
 		
-		notifications=new JLabel(notificationsNum+" Notifications");
-		notifications.setBounds(700, 3, 90, 15);
-		pane.add(notifications);
+		notificationsButton=new JButton(notificationsNum+" Notifications");
+		notificationsButton.setBounds(645, 3, 150, 20);
+		notificationsButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				NotificationsWindow.createAndShowGUI();
+				dispose();
+			}
+		});
+		pane.add(notificationsButton);
 		
     	addButton=new JButton("Add Items");
     	addButton.addActionListener(new ActionListener()
@@ -55,7 +61,7 @@ public class HomeWindow extends JFrame implements ActionListener
     			dispose();
     		}
     	});
-    	addButton.setBounds(275, 100, 250, 50);
+    	addButton.setBounds(275, 75, 250, 50);
     	pane.add(addButton);
 		
     	removeButton=new JButton("Remove Items");
@@ -68,7 +74,7 @@ public class HomeWindow extends JFrame implements ActionListener
     		}
     		
     	});
-    	removeButton.setBounds(275, 180, 250, 50);
+    	removeButton.setBounds(275, 155, 250, 50);
     	pane.add(removeButton);
 		
     	listButton=new JButton("View List of Items");
@@ -80,11 +86,23 @@ public class HomeWindow extends JFrame implements ActionListener
     			dispose();
     		}
     	});
-    	listButton.setBounds(275, 260, 250, 50);
+    	listButton.setBounds(275, 235, 250, 50);
     	pane.add(listButton);
     	
+    	recipesButton=new JButton("Recipes");
+    	recipesButton.addActionListener(new ActionListener()
+    	{
+    		public void actionPerformed(ActionEvent e)
+    		{
+    			RecipesWindow.createAndShowGUI();
+    			dispose();
+    		}
+    	});
+    	recipesButton.setBounds(275, 315, 250, 50);
+    	pane.add(recipesButton);
+    	
     	JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
-    	line2.setBounds(0, 450, 800, 18);
+    	line2.setBounds(0, 420, 800, 18);
     	pane.add(line2);
     	
     	//JSeparator line3=new JSeparator(JSeparator.VERTICAL);

@@ -1,19 +1,23 @@
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+import java.net.*;
 
 public class MainWindow extends JFrame implements ActionListener
 {
@@ -29,13 +33,14 @@ public class MainWindow extends JFrame implements ActionListener
 	protected JLabel logo;
 	
 	protected String username;
-	protected char[] password;
+	protected String password;
 	protected char[] correctPass={'f','f','f'};
 	
-	public MainWindow(String name)
+	public MainWindow(String name) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		super(name);
-		this.getContentPane().setPreferredSize(new Dimension(800,480));
+		UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		this.getContentPane().setPreferredSize(new Dimension(800,450));
 		
 	}
 	
@@ -83,7 +88,7 @@ public class MainWindow extends JFrame implements ActionListener
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		password=passwordField.getPassword();
+        		password=new String(passwordField.getPassword());
         	}
         });
         passwordField.setBounds(415, 125, 150, 25);
@@ -96,12 +101,24 @@ public class MainWindow extends JFrame implements ActionListener
     	
     	wrongPass=new JLabel("Incorrect username or password");
     	wrongPass.setVisible(false);
-    	wrongPass.setBounds(250,150,200,50);
+    	wrongPass.setBounds(300,160,300,50);
     	pane.add(wrongPass);
     	
     	register=new JButton("Register");
+    	register.addActionListener(new ActionListener()
+    	{
+    		public void actionPerformed(ActionEvent e)
+    		{
+    			RegisterWindow.createAndShowGUI();
+    			dispose();
+    		}
+    	});
     	register.setBounds(325, 240, 150, 40);
     	pane.add(register);
+		
+		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
+    	line2.setBounds(0, 420, 800, 18);
+    	pane.add(line2);
     	
     	
     	
@@ -109,26 +126,31 @@ public class MainWindow extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent e) 
 	{
 		username=usernameField.getText();
-		password=passwordField.getPassword();
-		if(username.equals("asdf")&&Arrays.equals(password, correctPass))
+		password=new String(passwordField.getPassword());
+		try {
+			sendRequest();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(true)
 		{
-			System.out.println("Good");
 			HomeWindow.createAndShowGUI();
 			dispose();
 		}
 		else
 		{
 			wrongPass.setVisible(true);
-			System.out.println("No");
 		}
 		
 	}
 	
-	private static void createAndShowGUI() 
+	static void createAndShowGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException 
 	{
 	        //Create and set up the window.
 	        MainWindow frame = new MainWindow("Kitchen Wizard - Please Log In");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.setLocation(0,0);
 	        //Set up the content pane.
 	        frame.addComponentsToPane(frame.getContentPane());
 	        //Display the window.
@@ -136,8 +158,31 @@ public class MainWindow extends JFrame implements ActionListener
 	        frame.setVisible(true);
 	}
 
-	public static void main(String args[])
+	public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		createAndShowGUI();
 	}
+	
+	public void sendRequest() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="login";
+		String param1=username;
+		String param2=password;
+		
+		String query=String.format("command=%s&username=%s&password=%s",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(param1,charset),
+				URLEncoder.encode(param2,charset),
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			System.out.println(inputLine);
+		in.close();
+	}
 }
+

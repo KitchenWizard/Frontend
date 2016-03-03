@@ -4,6 +4,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -15,7 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 
-public class ListWindow extends JFrame implements ActionListener
+public class NotificationsWindow extends JFrame implements ActionListener
 {
 	protected JLabel logo;
 	protected JLabel notifications;
@@ -23,14 +25,15 @@ public class ListWindow extends JFrame implements ActionListener
 	protected JButton home;
 	protected JButton alphaSort;
 	protected JButton expirSort;
-	protected JButton delete;
+	protected static JButton delete;
 	
 	protected JPanel listPane;
+	protected ArrayList itemNames=new ArrayList();
 	
-	public ListWindow(String name)
+	public NotificationsWindow(String name)
 	{
 		super(name);
-		this.getContentPane().setPreferredSize(new Dimension(800,480));
+		this.getContentPane().setPreferredSize(new Dimension(800,450));
 		
 	}
 	
@@ -41,7 +44,7 @@ public class ListWindow extends JFrame implements ActionListener
 		listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
 		
 		JScrollPane scroller=new JScrollPane(listPane);
-		scroller.setBounds(0, 26, 800, 420);
+		scroller.setBounds(0, 26, 800, 395);
 		pane.add(scroller);
 		
 		logo=new JLabel("Kitchen Wizard");
@@ -56,27 +59,51 @@ public class ListWindow extends JFrame implements ActionListener
 		notifications.setBounds(700, 3, 90, 15);
 		pane.add(notifications);
 		
-		for(int i=0;i<20;i++)
+		itemNames.add("b");
+		itemNames.add("e");
+		itemNames.add("f");
+		itemNames.add("a");
+		itemNames.add("x");
+		itemNames.add("z");
+		itemNames.add("t");
+		itemNames.add("p");
+		itemNames.add("q");
+		itemNames.add("m");
+		itemNames.add("l");
+		itemNames.add("k");
+		itemNames.add("g");
+		itemNames.add("w");
+		itemNames.add("v");
+		itemNames.add("o");
+		
+		for(int i=0;i<itemNames.size();i++)
 		{
-			JPanel item=new JPanel();
+			final int index=i;
+			final JPanel item=new JPanel();
 			item.setLayout(new BorderLayout());
-			
-			JLabel picture=new JLabel("Picture of item");
-			JLabel name=new JLabel("Item "+i);
-			JLabel expir=new JLabel("Expiration Date: "+i+"/"+i+"/"+i);
+			final JLabel number=new JLabel("#"+i);
+			final JLabel name=new JLabel("Notification");
+			final JLabel expir=new JLabel("Expiration Date: "+i+"/"+i+"/"+i);
 			JPanel itemDetails=new JPanel();
 			itemDetails.add(name);
 			itemDetails.add(expir);
 			delete=new JButton("X");
+			delete.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					itemNames.remove(index);
+					listPane.remove(item);
+					listPane.revalidate();
+					listPane.repaint();
+				}
+			});
 			
-			item.add(picture,BorderLayout.LINE_START);
+			item.add(number,BorderLayout.LINE_START);
 			item.add(itemDetails,BorderLayout.CENTER);
 			item.add(delete,BorderLayout.LINE_END);
 			item.setBorder(BorderFactory.createLineBorder(Color.black));
-			JButton itemButton=new JButton();
 			listPane.add(item);
-			
-			
 		}
 		
 		home=new JButton("Home");
@@ -98,19 +125,11 @@ public class ListWindow extends JFrame implements ActionListener
         		dispose();
         	}
         });
-		home.setBounds(5, 453, 75, 25);
+		home.setBounds(5, 423, 75, 25);
 		pane.add(home);
-		
-		alphaSort=new JButton("ABC");
-		alphaSort.setBounds(600, 453, 75, 25);
-		pane.add(alphaSort);
-		
-		expirSort=new JButton("Expir");
-		expirSort.setBounds(695, 453, 75, 25);
-		pane.add(expirSort);
-		
+	
 		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
-    	line2.setBounds(0, 450, 800, 18);
+    	line2.setBounds(0, 420, 800, 18);
     	pane.add(line2);
 		
 		
@@ -123,7 +142,7 @@ public class ListWindow extends JFrame implements ActionListener
 	static void createAndShowGUI() 
 	{
 	        //Create and set up the window.
-	        ListWindow frame = new ListWindow("Kitchen Wizard - Your List");
+	        NotificationsWindow frame = new NotificationsWindow("Kitchen Wizard - Your Notifications");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        //Set up the content pane.
 	        frame.addComponentsToPane(frame.getContentPane());
