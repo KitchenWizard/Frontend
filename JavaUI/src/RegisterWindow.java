@@ -21,6 +21,7 @@ import java.net.*;
 
 public class RegisterWindow extends JFrame implements ActionListener
 {
+	//Create components that will be added later
 	protected JTextField usernameField;
     protected JPasswordField passwordField;
     protected JLabel usernameLabel;
@@ -44,6 +45,13 @@ public class RegisterWindow extends JFrame implements ActionListener
 	protected String password;
 	protected String hash;
 	
+	protected static String session;
+	
+	//RegisterWindow 
+	//Will allow the user to type in their information to be able to register for an account
+	//They will have to type their first name, last name, email, and a username and password
+	//Then they can press the confirm button and the information will be sent to the database
+	
 	public RegisterWindow(String name)
 	{
 		super(name);
@@ -51,10 +59,13 @@ public class RegisterWindow extends JFrame implements ActionListener
 		
 	}
 	
+	//Add the components to the pane
 	public void addComponentsToPane(Container pane)
 	{
+		//Set the layout to null so we can play the components by ourselves
 		pane.setLayout(null);
     	
+		//Create the top bar which is common across all the screens
     	logo=new JLabel("Kitchen Wizard");
     	logo.setBounds(0, 0, 118, 22);
     	pane.add(logo);
@@ -63,86 +74,57 @@ public class RegisterWindow extends JFrame implements ActionListener
     	line.setBounds(0, 25, 800, 18);
     	pane.add(line);
     	
-    	//JSeparator line2=new JSeparator(JSeparator.VERTICAL);
-    	//line2.setBounds(399, 0, 3, 480);
-    	//pane.add(line2);
-    	
+    	//Create the label and field for the First Name
     	fNameLabel=new JLabel("First Name: ");
-    	fNameLabel.setBounds(100,100,100,25);
+    	fNameLabel.setBounds(100,105,100,30);
     	pane.add(fNameLabel);
     	
     	fName=new JTextField(25);
-    	fName.addActionListener(new ActionListener()
-    	{
-    		public void actionPerformed(ActionEvent e)
-    		{
-    			fname=fName.getText();
-    		}
-    	});
-    	fName.setBounds(170,100,150,25);
+    	fName.setBounds(170,105,150,30);
     	pane.add(fName);
     	
+    	//Create the label and field for the Last Name
     	lNameLabel=new JLabel("Last Name: ");
-    	lNameLabel.setBounds(100,130,100,25);
+    	lNameLabel.setBounds(100,135,100,30);
     	pane.add(lNameLabel);
     	
     	lName=new JTextField(25);
-    	lName.addActionListener(new ActionListener()
-    	{
-    		public void actionPerformed(ActionEvent e)
-    		{
-    			lname=lName.getText();
-    		}
-    	});
-    	lName.setBounds(170,130,150,25);
+    	lName.setBounds(170,135,150,30);
     	pane.add(lName);
     	
+    	//Create the label and field for Email
     	emailLabel=new JLabel("Email: ");
-    	emailLabel.setBounds(100,160,100,25);
+    	emailLabel.setBounds(100,165,100,30);
     	pane.add(emailLabel);
     	
     	emailField=new JTextField(25);
-    	emailField.addActionListener(new ActionListener()
-    	{
-    		public void actionPerformed(ActionEvent e)
-    		{
-    			email=emailField.getText();
-    		}
-    	});
-    	emailField.setBounds(170,160,150,25);
+    	emailField.setBounds(170,165,150,30);
     	pane.add(emailField);
     	
+    	//Create the label and field for Username
     	usernameLabel=new JLabel("Username: ");
-    	usernameLabel.setBounds(100,190, 100, 25);
+    	usernameLabel.setBounds(100,195, 100, 30);
     	pane.add(usernameLabel);
     	
     	usernameField=new JTextField(25);
-        usernameField.addActionListener(new ActionListener()
-        {
-        	public void actionPerformed(ActionEvent e)
-        	{
-        	}
-        });
-        usernameField.setBounds(170, 190, 150, 25);
+        usernameField.setBounds(170, 195, 150, 30);
         pane.add(usernameField);
         
+        //Create the label and field for Password
         passwordLabel=new JLabel("Password: ");
-        passwordLabel.setBounds(100, 220, 100, 25);
+        passwordLabel.setBounds(100, 225, 100, 30);
         pane.add(passwordLabel);
         
         passwordField=new JPasswordField(25);
-        passwordField.addActionListener(new ActionListener()
-        {
-        	public void actionPerformed(ActionEvent e)
-        	{
-        	}
-        });
-        passwordField.setBounds(170, 220, 150, 25);
+        passwordField.setBounds(170, 225, 150, 30);
         pane.add(passwordField);
     	
+        //Create the register button
     	register=new JButton("Register");
     	register.addActionListener(new ActionListener()
     	{
+    		//Define the function for when the button is pressed
+    		//Get the text from each of the fields and send all of it to the database
     		public void actionPerformed(ActionEvent e)
     		{
         		fname=fName.getText();
@@ -153,7 +135,6 @@ public class RegisterWindow extends JFrame implements ActionListener
     			try {
 					sendRequest();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
     		}
@@ -161,25 +142,21 @@ public class RegisterWindow extends JFrame implements ActionListener
     	register.setBounds(600, 200, 150, 40);
     	pane.add(register);
     	
+    	//Create the back button which will lead back to the MainWindow
     	back=new JButton("Back");
 		back.addActionListener(new ActionListener()
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		
         		try {
 					MainWindow.createAndShowGUI();
 				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (InstantiationException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (IllegalAccessException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (UnsupportedLookAndFeelException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
         		dispose();
@@ -188,16 +165,20 @@ public class RegisterWindow extends JFrame implements ActionListener
 		back.setBounds(5, 423, 75, 25);
 		pane.add(back);
 		
+		//Add in the bottom horizontal line
 		JSeparator line2=new JSeparator(JSeparator.HORIZONTAL);
     	line2.setBounds(0, 420, 800, 18);
     	pane.add(line2);
     	
 	}
+	
+	//Method required but not used
 	public void actionPerformed(ActionEvent e) 
 	{
 		
 	}
 	
+	//createAndShowGUI which will set up the frame and add all of the components
 	static void createAndShowGUI() 
 	{
 	        //Create and set up the window.
@@ -209,12 +190,16 @@ public class RegisterWindow extends JFrame implements ActionListener
 	        frame.pack();
 	        frame.setVisible(true);
 	}
-
+	
+	//main which will run createAndShowGUI
 	public static void main(String args[])
 	{
 		createAndShowGUI();
 	}
 	
+	//sendRequest which will attempt to connect to the database and send the first name, last name, username,
+	//hashed password, and email.
+	//It will receive a message if the account is created or not
 	public void sendRequest() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");

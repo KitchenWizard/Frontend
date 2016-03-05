@@ -4,6 +4,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -29,6 +35,7 @@ public class ListWindow extends JFrame implements ActionListener
 	
 	protected JPanel listPane;
 	protected ArrayList itemNames=new ArrayList();
+	static String session;
 	
 	public ListWindow(String name)
 	{
@@ -61,8 +68,14 @@ public class ListWindow extends JFrame implements ActionListener
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				NotificationsWindow.createAndShowGUI();
-				dispose();
+				try {
+					sendNotifications();
+					NotificationsWindow.createAndShowGUI();
+					dispose();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		pane.add(notificationsButton);
@@ -139,7 +152,7 @@ public class ListWindow extends JFrame implements ActionListener
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		HomeWindow.createAndShowGUI();
+        		HomeWindow.createAndShowGUI(session);
         		dispose();
         	}
         });
@@ -223,7 +236,7 @@ public class ListWindow extends JFrame implements ActionListener
 		
 	}
 	
-	static void createAndShowGUI() 
+	static void createAndShowGUI(String s) 
 	{
 	        //Create and set up the window.
 	        ListWindow frame = new ListWindow("Kitchen Wizard - Your List");
@@ -233,11 +246,34 @@ public class ListWindow extends JFrame implements ActionListener
 	        //Display the window.
 	        frame.pack();
 	        frame.setVisible(true);
+	        session=s;
+	}
+	static void createAndShowGUI()
+	{
 	}
 
 	public static void main(String args[])
 	{
 		createAndShowGUI();
+	}
+	
+
+	public void sendNotifications() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="notifications";
+		
+		String query=String.format("command=%s&",
+				URLEncoder.encode(command,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			System.out.println(inputLine);
+		in.close();
 	}
 }
 
