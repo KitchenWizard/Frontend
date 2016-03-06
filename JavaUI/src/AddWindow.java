@@ -35,9 +35,8 @@ public class AddWindow extends JFrame implements ActionListener
 	protected Container pane;
 	protected static String session;
 	protected String barcode;
-	protected String barcodehelp="";
 	
-	protected JTextField barcodeField;
+	protected static JTextField barcodeField;
 	protected JButton addButton;
 	
 	//Constructor
@@ -46,9 +45,6 @@ public class AddWindow extends JFrame implements ActionListener
 	{
 		super(name);
 		this.getContentPane().setPreferredSize(new Dimension(800,450));
-
-        KeyListener listener=new MyKeyListener();
-        addKeyListener(listener);
         setFocusable(true);
 		
 	}
@@ -92,24 +88,15 @@ public class AddWindow extends JFrame implements ActionListener
 		
 		barcodeField=new JTextField();
 		barcodeField.setBounds(350,150,300,50);
-		pane.add(barcodeField);
-		
-		addButton=new JButton("Add");
-		addButton.setBounds(0,300,100,100);
-		addButton.addActionListener(new ActionListener()
+		barcodeField.setVisible(false);
+		barcodeField.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				barcodeField.setText(barcodehelp);
 				barcode=barcodeField.getText();
-				try {
-					sendItem();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 			}
 		});
-		pane.add(addButton);
+		pane.add(barcodeField);
 		
 		//Create the bottom bar of the program
 		home=new JButton("Home");
@@ -160,34 +147,18 @@ public class AddWindow extends JFrame implements ActionListener
 	        frame.pack();
 	        frame.setVisible(true);
 	        session=s;
+	        barcodeField.grabFocus();
 	}
 	
 	//Default and required createAndShowGUI
 	static void createAndShowGUI()
 	{
-		
 	}
 
 	//main
 	public static void main(String args[])
 	{
 		createAndShowGUI();
-	}
-	
-	//keyListener to capture the barcode input
-	public class MyKeyListener implements KeyListener
-	{
-		public void keyTyped(KeyEvent e)
-		{
-		}
-		public void keyPressed(KeyEvent e) 
-		{
-		}
-		public void keyReleased(KeyEvent e) 
-		{
-			barcodehelp=barcodehelp+e.getKeyChar();
-		}
-		
 	}
 	
 	//sendItem which will send the barcode to the database
