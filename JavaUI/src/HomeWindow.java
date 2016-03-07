@@ -30,6 +30,7 @@ public class HomeWindow extends JFrame implements ActionListener
 	protected JLabel logo;
 	
 	protected static String session;
+	protected static String items;
 	
 	//Constructor
 	public HomeWindow(String name)
@@ -105,7 +106,7 @@ public class HomeWindow extends JFrame implements ActionListener
     		{
     			try {
 					sendList();
-	    			ListWindow.createAndShowGUI(session);
+	    			ListWindow.createAndShowGUI(session,items);
 	    			dispose();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -187,7 +188,7 @@ public class HomeWindow extends JFrame implements ActionListener
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			System.out.println(inputLine);
+			items=inputLine;
 		in.close();
 	}
 	

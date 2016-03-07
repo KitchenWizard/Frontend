@@ -86,6 +86,7 @@ public class AddWindow extends JFrame implements ActionListener
 		addLabel.setBounds(350, 100, 175, 38);
 		pane.add(addLabel);
 		
+		//BarcodeField which will capture the barcode input and when it is done and the scanner presses enter, the text will be sent to sendItem
 		barcodeField=new JTextField();
 		barcodeField.setBounds(350,150,300,50);
 		barcodeField.setVisible(false);
@@ -93,7 +94,13 @@ public class AddWindow extends JFrame implements ActionListener
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				//Get the text from the barcodeField and assign it to barcode
 				barcode=barcodeField.getText();
+				try {
+					sendItem();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		pane.add(barcodeField);

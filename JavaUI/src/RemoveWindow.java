@@ -72,11 +72,11 @@ public class RemoveWindow extends JFrame implements ActionListener
 		pane.add(removeLabel);
 		
 		removeField=new JTextField();
-		removeField.setBounds(350,150,300,50);
+		removeField.setBounds(350,150,100,50);
 		pane.add(removeField);
 		
-		removeButton=new JButton("Add");
-		removeButton.setBounds(0,300,100,100);
+		removeButton=new JButton("Remove");
+		removeButton.setBounds(350,210,100,50);
 		removeButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -129,7 +129,6 @@ public class RemoveWindow extends JFrame implements ActionListener
 	
 	static void createAndShowGUI()
 	{
-		
 	}
 
 	public static void main(String args[])
