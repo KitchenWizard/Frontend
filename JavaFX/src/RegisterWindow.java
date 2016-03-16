@@ -220,5 +220,4 @@ public class RegisterWindow extends Application{
 			dbResult=inputLine;
 		in.close();
 	}
-
 }

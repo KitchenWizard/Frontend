@@ -1,0 +1,68 @@
+.root{
+	-fx-background:#D8E4E8;
+}
+.label {
+	-fx-font-size:12px;
+	-fx-text-fill:#333333;
+	-fx-font-family:"Verdana";
+}
+.kw {
+	-fx-font-size:15px;
+	-fx-text-fill:#222222;
+	-fx-font-family:"Tahoma";
+	-fox-font-weight:bold;
+}
+
+.title{
+	-fx-font-size:25px;
+	-fx-text-fill:#222222;
+	-fx-font-family:"Helvetica";
+	-fox-font-weight:bold;
+}
+.success{
+	-fx-font-size:15px;
+	-fx-text-fill:green;
+	-fx-font-family:"Helvetica";
+	-fox-font-weight:bold;
+}
+.warning{
+	-fx-font-size:15px;
+	-fx-text-fill:red;
+	-fx-font-family:"Helvetica";
+	-fox-font-weight:bold;
+}
+.menubutton {
+	-fx-text-fill:white;
+	-fx-text-family:"Verdana";
+	-fx-font-weight:bold;
+	-fx-font-size:18px;
+	-fx-background-color: linear-gradient(#AAAAAA, #2A5058);
+	-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);
+}
+.notificationsbutton {
+	-fx-text-fill:white;
+	-fx-text-family:"Verdana";
+	-fx-font-weight:bold;
+	-fx-background-color: linear-gradient(#AAAAAA, #2A5058);
+	-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);
+}
+
+.notificationsbutton:pressed, .notificationsbutton:default:hover:pressed {
+	-fx-background-color: linear-gradient(#555555, #2A5058);
+	-fx-text-fill:"silver";
+}
+
+.menubutton:pressed, .menubutton:default:hover:pressed {
+	-fx-background-color: linear-gradient(#555555, #2A5058);
+	-fx-text-fill:"silver";
+}
+
+.delete{
+	-fx-background-color:#BB0000;
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);
+}
+.delete:pressed, .delete:default:hover:pressed {
+	-fx-background-color: #990000;
+	-fx-text-fill:"silver";
+}

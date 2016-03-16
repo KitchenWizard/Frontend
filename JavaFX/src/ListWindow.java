@@ -1,7 +1,5 @@
-import javafx.scene.text.*;
 import javafx.stage.Stage;
 
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,11 +12,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,10 +22,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
 public class ListWindow extends Application{
@@ -51,14 +40,16 @@ public class ListWindow extends Application{
 	static String session;
 	static String items;
 	static String id;
+	static Stage stage;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage) throws Exception 
+	public static void setStage(Stage stage,String s) throws Exception 
 	{
+		session=s;
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
 		grid.setVgap(5);
@@ -163,7 +154,7 @@ public class ListWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage);
+					HomeWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -206,6 +197,22 @@ public class ListWindow extends Application{
 			Button moreInfo=new Button("More");
 			moreInfo.setPadding(new Insets(1,10,1,10));
 			moreInfo.getStyleClass().add("notificationsbutton");
+			moreInfo.setOnAction(new EventHandler<ActionEvent>()
+			{
+				public void handle(ActionEvent event) 
+				{
+					try {
+						ExpandedItemWindow.setStage(stage, session,picture,name,expir);;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			});
 			infoBox.getChildren().add(moreInfo);
 			
 			Button delete=new Button("X");
@@ -282,5 +289,4 @@ public class ListWindow extends Application{
 			//dbResponse=inputLine;
 		in.close();
 	}
-
 }

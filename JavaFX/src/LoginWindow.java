@@ -1,4 +1,3 @@
-import javafx.scene.text.*;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -99,12 +98,28 @@ public class LoginWindow extends Application{
 				{
 					public void handle(ActionEvent event)
 					{
+						username=usernameField.getText();
+						password=new String(passwordField.getText());
+						
+						System.out.println(username);
+						System.out.println(password);
 						try {
-							HomeWindow.setStage(stage);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
+							sendRequest();
+						} catch (IOException e1) {
 							noConnection.setVisible(true);
 						}
+						System.out.println(session);
+						if(session.equals("INVALID_LOGIN"))
+						{
+							if(!noConnection.isVisible())
+								wrongPass.setVisible(true);
+						} else
+							try 
+							{
+								HomeWindow.setStage(stage,session);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 					}
 				});
 		confirm.getStyleClass().add("menubutton");
@@ -130,12 +145,12 @@ public class LoginWindow extends Application{
 		wrongPass=new Label("Incorrect Username or Password");
 		wrongPass.setVisible(false);
 		wrongPass.getStyleClass().add("warning");
-		grid.add(wrongPass, 305, 215,200,50);
+		grid.add(wrongPass, 305, 215,250,50);
 		
 		noConnection=new Label("Cannot connect to database");
 		noConnection.setVisible(false);
 		noConnection.getStyleClass().add("warning");
-		grid.add(noConnection, 310, 215,200,50);
+		grid.add(noConnection, 305, 235,200,50);
 		
 		stage.setTitle("Kitchen Wizard -Please Login");
         stage.setScene(scene);
@@ -147,7 +162,7 @@ public class LoginWindow extends Application{
 		
 	}
 	
-	public void sendRequest() throws IOException
+	public static void sendRequest() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -170,5 +185,4 @@ public class LoginWindow extends Application{
 		System.out.println(session);
 		in.close();
 	}
-
 }

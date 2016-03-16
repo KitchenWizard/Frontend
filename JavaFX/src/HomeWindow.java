@@ -1,6 +1,4 @@
-import javafx.scene.text.*;
 import javafx.stage.Stage;
-
 import java.io.File;
 
 import javafx.application.Application;
@@ -29,8 +27,9 @@ public class HomeWindow extends Application{
         launch(args);
     }
 	
-	public static void setStage(Stage stage) throws Exception 
+	public static void setStage(Stage stage,String s) throws Exception 
 	{
+		session=s;
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
 		grid.setVgap(5);
@@ -89,7 +88,7 @@ public class HomeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					AddWindow.setStage(stage);
+					AddWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -107,7 +106,7 @@ public class HomeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					ListWindow.setStage(stage);
+					ListWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -125,7 +124,7 @@ public class HomeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					RecipesWindow.setStage(stage);
+					RecipesWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -147,8 +146,6 @@ public class HomeWindow extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
-
 }

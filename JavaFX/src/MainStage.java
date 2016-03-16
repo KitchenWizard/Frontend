@@ -13,5 +13,4 @@ public class MainStage extends Application{
 		LoginWindow.setStage(stage);
         stage.show();
 	}
-
 }

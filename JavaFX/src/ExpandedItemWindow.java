@@ -15,39 +15,28 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-public class AddWindow extends Application{
+public class ExpandedItemWindow extends Application{
 	
 	protected static Label logo;
 	protected static int notificationsNum;
 	protected static Button notificationsButton;
-	
-	protected static Label addLabel;
-	protected static Button home;
+	protected static Button back;
 	
 	protected static Label picture;
 	protected static Label name;
 	protected static Label expir;
-	protected static TextField expirField;
-	
-	protected static ComboBox group;
-	protected static Button sendAdditionalInfo;
+	protected static Label additional;
 	
 	protected static String session;
-	protected static String barcode;
-	protected static String dbResponse;
-	
-	protected static TextField barcodeField;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s) throws Exception 
+	public static void setStage(Stage stage, String s,Label p,Label n,Label e) throws Exception 
 	{
 		session=s;
 		GridPane grid=new GridPane();
@@ -83,24 +72,6 @@ public class AddWindow extends Application{
 		Separator line=new Separator();
 		line.setValignment(VPos.CENTER);
 		grid.add(line, 0, 25,800,2);
-
-		//BarcodeField which will capture the barcode input and when it is done and the scanner presses enter, the text will be sent to sendItem
-		barcodeField=new TextField();
-		barcodeField.setOpacity(0);
-		barcodeField.setOnKeyPressed(new EventHandler<KeyEvent>()
-        {
-			public void handle(KeyEvent keyEvent)
-        	{
-				if(keyEvent.getCode()==KeyCode.ENTER)
-				{
-				//Get the text from the barcodeField and assign it to barcode
-					barcode=barcodeField.getText();
-					System.out.println(barcode);
-				}
-        	}
-        });
-		grid.add(barcodeField,400,200,1,1);
-		
 		
 		notificationsButton=new Button(notificationsNum+" Notifications");
 		notificationsButton.setOnAction(new EventHandler<ActionEvent>()
@@ -119,63 +90,45 @@ public class AddWindow extends Application{
 		notificationsButton.getStyleClass().add("notificationsbutton");
 		grid.add(notificationsButton,675, 1, 125, 20);
 		
-		//Create and add the add label which will prompt the user to scan an item
-		addLabel=new Label("Scan Item Now");
-		addLabel.getStyleClass().add("title");
-		grid.add(addLabel,300, 100, 175, 38);
+		picture=p;
+		grid.add(picture, 100, 50,100,100);
+		
+		name=n;
+		grid.add(name, 350, 50,100,20);
+		
+		expir=e;
+		grid.add(expir, 350, 70,100,20);
+		
 		
 		//Create the bottom bar of the program
-		home=new Button("Home");
-		home.setOnAction(new EventHandler<ActionEvent>()
+		back=new Button("Back");
+		back.setOnAction(new EventHandler<ActionEvent>()
         {
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+					ListWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}
         });
-		home.getStyleClass().add("notificationsbutton");
-		grid.add(home,5, 455, 75, 20);
+		back.getStyleClass().add("notificationsbutton");
+		grid.add(back,5, 455, 75, 20);
     	
     	//Add in the bottom horizontal line
 		Separator line2=new Separator();
 		line2.setValignment(VPos.CENTER);
     	grid.add(line2, 0, 450, 800, 2);
 
-		stage.setTitle("Kitchen Wizard -Home");
+		stage.setTitle("Kitchen Wizard -Item");
         stage.setScene(scene);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 		
-	}
-	public void sendItem() throws IOException
-	{
-		
-		URL url=new URL("http://52.36.126.156:8080/");
-		String charset="UTF-8";
-		String command="additem";
-		String barcode1=barcode;
-		String sessionkey=session;
-		
-		String query=String.format("command=%s&barcode=%s&sessionkey=%s&",
-				URLEncoder.encode(command,charset),
-				URLEncoder.encode(barcode1,charset),
-				URLEncoder.encode(sessionkey,charset));
-		
-		URLConnection connection=new URL(url+"?"+query).openConnection();
-		connection.setRequestProperty("Accept-Charset", charset);
-		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String inputLine;
-		while((inputLine=in.readLine())!=null)
-			System.out.println(inputLine);
-		in.close();
 	}
 	
 	//sendNotifications which will get the current list of notifications from the database
@@ -193,7 +146,7 @@ public class AddWindow extends Application{
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			dbResponse=inputLine;
+			
 		in.close();
 	}
 }
