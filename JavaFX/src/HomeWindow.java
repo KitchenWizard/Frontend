@@ -1,5 +1,12 @@
 import javafx.stage.Stage;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -105,8 +112,14 @@ public class HomeWindow extends Application{
         {
 			public void handle(ActionEvent event)
         	{
+				try {
+					sendList();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
         		try {
-					ListWindow.setStage(stage,session);
+					ListWindow.setStage(stage,session,items);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -148,4 +161,27 @@ public class HomeWindow extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		
 	}
+	
+	//sendList which will send a request to the database to get the current list of items for the user
+		//returns all of the items and all of the information about them
+		public static void sendList() throws IOException
+		{
+			URL url=new URL("http://52.36.126.156:8080/");
+			String charset="UTF-8";
+			String command="getitems";
+			String sessionkey=session;
+			
+			String query=String.format("command=%s&sessionkey=%s&",
+					URLEncoder.encode(command,charset),
+					URLEncoder.encode(sessionkey,charset));
+			
+			URLConnection connection=new URL(url+"?"+query).openConnection();
+			connection.setRequestProperty("Accept-Charset", charset);
+			BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String inputLine;
+			while((inputLine=in.readLine())!=null)
+				items=inputLine;
+			System.out.println(items);
+			in.close();
+		}
 }

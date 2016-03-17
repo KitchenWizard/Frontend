@@ -30,14 +30,16 @@ public class ExpandedItemWindow extends Application{
 	protected static Label additional;
 	
 	protected static String session;
+	protected static String items;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s,Label p,Label n,Label e) throws Exception 
+	public static void setStage(Stage stage, String s,String it,Label p,Label n,Label e) throws Exception 
 	{
+		items=it;
 		session=s;
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
@@ -107,7 +109,7 @@ public class ExpandedItemWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					ListWindow.setStage(stage,session);
+					ListWindow.setStage(stage,session,items);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

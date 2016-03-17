@@ -26,6 +26,8 @@ import javafx.scene.layout.*;
 
 public class ListWindow extends Application{
 	
+	//[[40; '076677100145'; 'FAMOUS AMOS FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS'; '2 oz'; 'NONE'; 'http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png'; 'NONE'; '0%']; [41; '076677100145'; 'FAMOUS AMOS FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS'; '2 oz'; 'NONE'; 'http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png'; 'NONE'; '0%']]
+	//items structured like this
 	protected static Label logo;
 	protected static int notificationsNum;
 	protected static Button notificationsButton;
@@ -41,15 +43,18 @@ public class ListWindow extends Application{
 	static String items;
 	static String id;
 	static Stage stage;
+	static String[] parsed;
+	static ArrayList addItems;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage,String s) throws Exception 
+	public static void setStage(Stage stage,String s, String it) throws Exception 
 	{
 		session=s;
+		items=it;
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
 		grid.setVgap(5);
@@ -75,7 +80,6 @@ public class ListWindow extends Application{
 			rowConst.setPercentHeight(100.0/numRows);
 			grid.getRowConstraints().add(rowConst);
 		}
-		
 		
 		logo=new Label("Kitchen Wizard");
 		logo.getStyleClass().add("kw");
@@ -106,10 +110,13 @@ public class ListWindow extends Application{
 		listView.setMinSize(775, 395);
 		listView.setEditable(false);
 		
-		ArrayList outer = new ArrayList();
-		populate(outer);
+		addItems=new ArrayList();
+		String newitems=items.replace("[", "");
+		newitems=newitems.replace("]", "");
+		parsed=newitems.split(";");
+		populate(parsed);
 		
-		ObservableList data=FXCollections.observableArrayList(outer);
+		ObservableList data=FXCollections.observableArrayList(addItems);
 		listView.setItems(data);
 		grid.add(listView, 0, 26,795,423);
 		
@@ -173,9 +180,9 @@ public class ListWindow extends Application{
         stage.setScene(scene);
 	}
 
-	public static void populate(ArrayList items) throws IOException
+	public static void populate(String[] item) throws IOException
 	{
-		for(int i=0;i<15;i++)
+		for(int i=0;i<item.length-1;i+=10)
 		{
 			int index=i;
 			HBox hbox=new HBox();
@@ -184,14 +191,14 @@ public class ListWindow extends Application{
 			HBox infoBox=new HBox();
 			HBox deleteBox=new HBox();
 			
-			Label picture=new Label("picture"+i);
+			Label picture=new Label(item[7]);
 			picture.setPadding(new Insets(1,10,1,10));
 			imageBox.getChildren().add(picture);
 			
-			Label name=new Label("name"+i);
+			Label name=new Label(item[2]);
 			name.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(name);
-			Label expir=new Label("expiration date"+i);
+			Label expir=new Label(item[6]);
 			expir.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(expir);
 			Button moreInfo=new Button("More");
@@ -202,7 +209,7 @@ public class ListWindow extends Application{
 				public void handle(ActionEvent event) 
 				{
 					try {
-						ExpandedItemWindow.setStage(stage, session,picture,name,expir);;
+						ExpandedItemWindow.setStage(stage, session,items,picture,name,expir);;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -222,10 +229,17 @@ public class ListWindow extends Application{
 					{
 						public void handle(ActionEvent event) 
 						{
-							items.remove(index);
+							id=item[index];
+							try {
+								sendRemove();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							//item.remove(index);
 							listView.getItems().remove(index);
 							try {
-								populate(items);
+								populate(item);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -245,7 +259,7 @@ public class ListWindow extends Application{
 			deleteBox.setAlignment(Pos.CENTER_RIGHT);
 			
 			hbox.getChildren().addAll(imageBox,infoBox,deleteBox);
-			items.add(hbox);
+			addItems.add(hbox);
 		}
 	}
 	
@@ -264,6 +278,29 @@ public class ListWindow extends Application{
 	
 	    is.close();
 	    os.close();
+	}
+	
+	public static void sendRemove() throws IOException
+	{
+		
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="removeitem";
+		String id1=id;
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&id=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(id1,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			System.out.println(inputLine);
+		in.close();
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -286,7 +323,7 @@ public class ListWindow extends Application{
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			//dbResponse=inputLine;
+			System.out.println(inputLine);
 		in.close();
 	}
 }

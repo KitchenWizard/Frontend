@@ -21,6 +21,15 @@ import javafx.scene.layout.*;
 
 public class AddWindow extends Application{
 	
+	//(38, 'nik', '076677100145', None, '0%', datetime.datetime(2016, 3, 16, 22, 45, 39), -1)
+	//This is how the data is given back after scanning an item
+	//38 is iventory id, nik is username, barcode, none is expiration date, 0%  is default used amount, date scanned, -1 means no group and needs to add
+	
+	//ADD_FAILED_PRODUCT_NOT_IN_API
+	//Account for this
+	
+	//ADD_FAILED
+	//Account for this
 	protected static Label logo;
 	protected static int notificationsNum;
 	protected static Button notificationsButton;
@@ -96,6 +105,43 @@ public class AddWindow extends Application{
 				//Get the text from the barcodeField and assign it to barcode
 					barcode=barcodeField.getText();
 					System.out.println(barcode);
+					try {
+						sendItem();
+						barcodeField.clear();
+						if(dbResponse!=null)
+						{
+							if(!dbResponse.equals("ADD_FAILED"))
+							{
+								if(!dbResponse.equals("ADD_FAILED_PRODUCT_NOT_IN_API"))
+								{
+									Label added=new Label("Item Added");
+									grid.add(added, 300, 200,200,50);
+									String[] itemDetails=dbResponse.split(";");
+									if(itemDetails[6].equals(-1))
+									{
+										expir=new Label("Expiration Date:");
+										grid.add(expir, 300, 225,150,50);
+										expirField=new TextField();
+										grid.add(expirField, 400, 225,100,25);
+										
+									}
+								}
+								else
+								{
+									Label notInAPI=new Label("Product not in API.  Please add manually");
+									grid.add(notInAPI, 300, 200,300,50);
+								}
+							}
+							else
+							{
+								Label addFailed=new Label("Product not added");
+								grid.add(addFailed, 300, 200,200,50);
+							}
+						}
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
         	}
         });
@@ -155,7 +201,7 @@ public class AddWindow extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	public void sendItem() throws IOException
+	public static void sendItem() throws IOException
 	{
 		
 		URL url=new URL("http://52.36.126.156:8080/");
@@ -174,7 +220,8 @@ public class AddWindow extends Application{
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			System.out.println(inputLine);
+			dbResponse=inputLine;
+		System.out.println(dbResponse);
 		in.close();
 	}
 	
@@ -194,6 +241,7 @@ public class AddWindow extends Application{
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
 			dbResponse=inputLine;
+		System.out.println(dbResponse);
 		in.close();
 	}
 }

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -108,8 +109,7 @@ public class LoginWindow extends Application{
 						} catch (IOException e1) {
 							noConnection.setVisible(true);
 						}
-						System.out.println(session);
-						if(session.equals("INVALID_LOGIN"))
+						if(session.equals("INVAILD_LOGIN"))
 						{
 							if(!noConnection.isVisible())
 								wrongPass.setVisible(true);

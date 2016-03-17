@@ -218,6 +218,7 @@ public class RegisterWindow extends Application{
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
 			dbResult=inputLine;
+		System.out.println(dbResult);
 		in.close();
 	}
 }
