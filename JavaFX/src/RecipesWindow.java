@@ -109,7 +109,7 @@ public class RecipesWindow extends Application{
 				}
         	}
         });
-		grid.add(addRecipe, 100, 200,300,100);
+		grid.add(addRecipe, 200, 200,300,100);
 		
 		viewRecipes=new Button("View Recipes");
 		viewRecipes.getStyleClass().add("menubutton");

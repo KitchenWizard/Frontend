@@ -34,7 +34,7 @@ public class LoginWindow extends Application{
 	
 	protected static String username;
 	protected static String password;
-	protected static String session;
+	protected static String session="";
 	
 	public static void main(String[] args) 
 	{
@@ -109,7 +109,7 @@ public class LoginWindow extends Application{
 						} catch (IOException e1) {
 							noConnection.setVisible(true);
 						}
-						if(session.equals(null))
+						if(session.equals(""))
 						{
 							if(!noConnection.isVisible())
 								wrongPass.setVisible(true);

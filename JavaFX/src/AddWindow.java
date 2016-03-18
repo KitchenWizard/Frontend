@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -100,16 +101,16 @@ public class AddWindow extends Application{
 					try {
 						sendItem();
 						barcodeField.clear();
-						if(dbResponse!=null)
+						String[] itemDetails=dbResponse.split(";");
+						if(itemDetails[0]!=null)
 						{
-							if(!dbResponse.equals("ADD_FAILED"))
+							if(!itemDetails[0].equals("'ADD_FAILED'"))
 							{
-								if(!dbResponse.equals("ADD_FAILED_PRODUCT_NOT_IN_API"))
+								if(!itemDetails[0].equals("'ADD_FAILED_PRODUCT_NOT_IN_API'"))
 								{
 									Label added=new Label("Item Added");
 									grid.add(added, 300, 200,200,50);
-									String[] itemDetails=dbResponse.split(";");
-									if(itemDetails[6].equals(-1))
+									if(itemDetails[6].equals("'None'"))
 									{
 										AddAdditionalInfoWindow.setStage(stage,session);
 									}
@@ -118,6 +119,11 @@ public class AddWindow extends Application{
 								{
 									Label notInAPI=new Label("Product not in API.  Please add manually");
 									grid.add(notInAPI, 300, 200,300,50);
+									TimeUnit.SECONDS.sleep(5);
+									AddItemManually.setStage(stage, session, barcode);
+									//REQUIRED - Barcode, name, description, manufacturer sessionkey
+									//EXTRA - Quantity, Group ID
+									
 								}
 							}
 							else
@@ -229,7 +235,7 @@ public class AddWindow extends Application{
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
 			dbResponse=inputLine;
-		System.out.println(dbResponse);
+		//System.out.println(dbResponse);
 		in.close();
 	}
 }

@@ -1,5 +1,6 @@
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -114,7 +116,8 @@ public class ListWindow extends Application{
 		String newitems=items.replace("[", "");
 		newitems=newitems.replace("]", "");
 		parsed=newitems.split(";");
-		populate(parsed);
+		List parsedList=Arrays.asList(parsed);
+		populate(parsedList);
 		
 		ObservableList data=FXCollections.observableArrayList(addItems);
 		listView.setItems(data);
@@ -180,9 +183,9 @@ public class ListWindow extends Application{
         stage.setScene(scene);
 	}
 
-	public static void populate(String[] item) throws IOException
+	public static void populate(List item) throws IOException
 	{
-		for(int i=0;i<item.length-1;i+=10)
+		for(int i=0;i<item.size()-1;i+=10)
 		{
 			int index=i;
 			HBox hbox=new HBox();
@@ -191,14 +194,14 @@ public class ListWindow extends Application{
 			HBox infoBox=new HBox();
 			HBox deleteBox=new HBox();
 			
-			Label picture=new Label(item[7]);
+			Label picture=new Label((String)item.get(7));
 			picture.setPadding(new Insets(1,10,1,10));
 			imageBox.getChildren().add(picture);
 			
-			Label name=new Label(item[2]);
+			Label name=new Label((String)item.get(2));
 			name.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(name);
-			Label expir=new Label(item[6]);
+			Label expir=new Label((String)item.get(6));
 			expir.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(expir);
 			Button moreInfo=new Button("More");
@@ -229,7 +232,7 @@ public class ListWindow extends Application{
 					{
 						public void handle(ActionEvent event) 
 						{
-							id=item[index];
+							id=(String) item.get(index);
 							try {
 								sendRemove();
 							} catch (IOException e1) {
@@ -238,6 +241,7 @@ public class ListWindow extends Application{
 							}
 							//item.remove(index);
 							listView.getItems().remove(index);
+							item.remove(index);
 							try {
 								populate(item);
 							} catch (IOException e) {
@@ -282,7 +286,6 @@ public class ListWindow extends Application{
 	
 	public static void sendRemove() throws IOException
 	{
-		
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
 		String command="removeitem";
