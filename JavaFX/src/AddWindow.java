@@ -37,14 +37,6 @@ public class AddWindow extends Application{
 	protected static Label addLabel;
 	protected static Button home;
 	
-	protected static Label picture;
-	protected static Label name;
-	protected static Label expir;
-	protected static TextField expirField;
-	
-	protected static ComboBox group;
-	protected static Button sendAdditionalInfo;
-	
 	protected static String session;
 	protected static String barcode;
 	protected static String dbResponse;
@@ -119,11 +111,7 @@ public class AddWindow extends Application{
 									String[] itemDetails=dbResponse.split(";");
 									if(itemDetails[6].equals(-1))
 									{
-										expir=new Label("Expiration Date:");
-										grid.add(expir, 300, 225,150,50);
-										expirField=new TextField();
-										grid.add(expirField, 400, 225,100,25);
-										
+										AddAdditionalInfoWindow.setStage(stage,session);
 									}
 								}
 								else
@@ -139,7 +127,7 @@ public class AddWindow extends Application{
 							}
 						}
 						
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}

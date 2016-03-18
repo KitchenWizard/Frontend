@@ -27,7 +27,13 @@ public class ExpandedItemWindow extends Application{
 	protected static Label picture;
 	protected static Label name;
 	protected static Label expir;
-	protected static Label additional;
+	protected static Label qunatity;
+	protected static Label group;
+	protected static Label quantity;
+	
+	protected static TextField expirField;
+	protected static TextField quantityField;
+	
 	
 	protected static String session;
 	protected static String items;
@@ -98,8 +104,17 @@ public class ExpandedItemWindow extends Application{
 		name=n;
 		grid.add(name, 350, 50,100,20);
 		
-		expir=e;
+		expir=new Label("Expiration Date:");
 		grid.add(expir, 350, 70,100,20);
+		expirField=new TextField();
+		expirField.setText(e.getText());
+		grid.add(expirField, 450, 70,100,30);
+		
+		quantity=new Label("Quantity:");
+		grid.add(quantity, 350, 90,100,20);
+		quantityField=new TextField();
+		grid.add(quantityField, 450, 70,100,30);
+		
 		
 		
 		//Create the bottom bar of the program

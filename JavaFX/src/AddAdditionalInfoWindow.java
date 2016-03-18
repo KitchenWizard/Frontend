@@ -2,46 +2,52 @@ import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-public class RecipesWindow extends Application{
+public class AddAdditionalInfoWindow extends Application{
 	
 	protected static Label logo;
 	protected static int notificationsNum;
 	protected static Button notificationsButton;
 	
 	protected static Button home;
-	protected static Button addRecipe;
-	protected static Button viewRecipes;
 	
-	static String session;
+	protected static Label picture;
+	protected static Label name;
+	protected static Label expir;
+	protected static TextField expirField;
+	protected static Label quantity;
+	protected static TextField quantityField;
+	
+	protected static ComboBox group;
+	protected static Button sendAdditionalInfo;
+	
+	protected static String session;
+	protected static String dbResponse;
+	
+	protected static TextField barcodeField;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage,String s) throws Exception 
+	public static void setStage(Stage stage, String s) throws Exception 
 	{
 		session=s;
 		GridPane grid=new GridPane();
@@ -78,6 +84,9 @@ public class RecipesWindow extends Application{
 		line.setValignment(VPos.CENTER);
 		grid.add(line, 0, 25,800,2);
 
+		
+		
+		
 		notificationsButton=new Button(notificationsNum+" Notifications");
 		notificationsButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -95,37 +104,16 @@ public class RecipesWindow extends Application{
 		notificationsButton.getStyleClass().add("notificationsbutton");
 		grid.add(notificationsButton,675, 1, 125, 20);
 		
-		addRecipe=new Button("Add a Recipe");
-		addRecipe.getStyleClass().add("menubutton");
-		addRecipe.setOnAction(new EventHandler<ActionEvent>()
-        {
-			public void handle(ActionEvent event)
-        	{
-        		try {
-					AddRecipeWindow.setStage(stage,session);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        });
-		grid.add(addRecipe, 100, 200,300,100);
+		expir=new Label("Expiration Date:");
+		grid.add(expir, 150, 50,100,25);
+		expirField=new TextField();
+		grid.add(expirField, 225, 50,100,30);
 		
-		viewRecipes=new Button("View Recipes");
-		viewRecipes.getStyleClass().add("menubutton");
-		viewRecipes.setOnAction(new EventHandler<ActionEvent>()
-        {
-			public void handle(ActionEvent event)
-        	{
-        		try {
-					RecipesListWindow.setStage(stage,session);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        });
-		grid.add(viewRecipes, 500, 200,300,100);
+		quantity=new Label("Quantity used:");
+		grid.add(quantity, 190, 50,100,25);
+		quantityField=new TextField();
+		grid.add(quantityField, 225, 50,100,30);
+		
 		
 		//Create the bottom bar of the program
 		home=new Button("Home");
@@ -149,13 +137,35 @@ public class RecipesWindow extends Application{
 		line2.setValignment(VPos.CENTER);
     	grid.add(line2, 0, 450, 800, 2);
 
-		stage.setTitle("Kitchen Wizard -Your Recipes");
+		stage.setTitle("Kitchen Wizard -Home");
         stage.setScene(scene);
 	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+	public static void sendItem() throws IOException
+	{
+		
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="additem";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			dbResponse=inputLine;
+		System.out.println(dbResponse);
+		in.close();
 	}
 	
 	//sendNotifications which will get the current list of notifications from the database
@@ -173,7 +183,8 @@ public class RecipesWindow extends Application{
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			//dbResponse=inputLine;
+			dbResponse=inputLine;
+		System.out.println(dbResponse);
 		in.close();
 	}
 }

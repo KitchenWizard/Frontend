@@ -109,17 +109,22 @@ public class LoginWindow extends Application{
 						} catch (IOException e1) {
 							noConnection.setVisible(true);
 						}
-						if(session.equals("INVAILD_LOGIN"))
+						if(session.equals(null))
 						{
 							if(!noConnection.isVisible())
 								wrongPass.setVisible(true);
-						} else
+						} else if(session.equals("INVAILD_LOGIN"))
+						{
+							noConnection.setVisible(true);
+						}else
+						{
 							try 
 							{
 								HomeWindow.setStage(stage,session);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+						}
 					}
 				});
 		confirm.getStyleClass().add("menubutton");
