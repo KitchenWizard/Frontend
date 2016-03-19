@@ -101,7 +101,11 @@ public class AddWindow extends Application{
 					try {
 						sendItem();
 						barcodeField.clear();
+						dbResponse.replace("[","");
+						dbResponse.replace("]", "");
 						String[] itemDetails=dbResponse.split(";");
+						System.out.println(itemDetails[6]);
+						System.out.println(itemDetails[6].equals(" 'None']"));
 						if(itemDetails[0]!=null)
 						{
 							if(!itemDetails[0].equals("'ADD_FAILED'"))
@@ -110,9 +114,9 @@ public class AddWindow extends Application{
 								{
 									Label added=new Label("Item Added");
 									grid.add(added, 300, 200,200,50);
-									if(itemDetails[6].equals("'None'"))
+									if(itemDetails[6].equals(" 'None']"))
 									{
-										AddAdditionalInfoWindow.setStage(stage,session);
+										AddAdditionalInfoWindow.setStage(stage,session,itemDetails[0]);
 									}
 								}
 								else

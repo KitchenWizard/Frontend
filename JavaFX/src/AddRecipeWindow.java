@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -39,6 +41,10 @@ public class AddRecipeWindow extends Application{
 	protected static ComboBox itemsBox;
 	protected static TextField prepField;
 	protected static TextField cookField;
+	
+	protected static Button confirm;
+	
+	protected static String groups;
 	
 	
 	public static void setStage(Stage stage,String s) throws Exception 
@@ -86,6 +92,11 @@ public class AddRecipeWindow extends Application{
 		
 		items=new Label("Ingredients:");
 		grid.add(items, 100, 130,100,30);
+		getGroups();
+		ObservableList<String> groupList=FXCollections.observableArrayList(groups.split(";"));
+		System.out.println(groupList.get(0));
+		itemsBox=new ComboBox(groupList);
+		grid.add(itemsBox,200, 130, 100,30);
 		
 		
 		prep=new Label("Prep Time:");
@@ -97,6 +108,10 @@ public class AddRecipeWindow extends Application{
 		grid.add(cook, 100, 210,100,30);
 		cookField=new TextField();
 		grid.add(cookField, 200, 210,100,30);
+		
+		confirm=new Button("Send");
+		confirm.getStyleClass().add("menubutton");
+		grid.add(confirm, 200, 250,200,50);
 		
 		back=new Button("Back");
 		back.setOnAction(new EventHandler<ActionEvent>()
@@ -122,7 +137,7 @@ public class AddRecipeWindow extends Application{
     	
 		
 		Scene scene = new Scene(grid, 800, 480);
-        stage.setTitle("Kitchen Wizard -Register");
+        stage.setTitle("Kitchen Wizard -Add Recipe");
 		File f=new File("Style.css");
 		scene.getStylesheets().add("file:///"+f.getAbsolutePath().replace("\\", "/"));
         stage.setScene(scene);
@@ -131,5 +146,23 @@ public class AddRecipeWindow extends Application{
 
 	public void start(Stage primaryStage) throws Exception 
 	{	
+	}
+	public static void getGroups() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getgrouplist";
+		
+		String query=String.format("command=%s&",
+				URLEncoder.encode(command,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			groups=inputLine;
+		System.out.println(groups);
+		in.close();
 	}
 }

@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,23 +36,27 @@ public class AddAdditionalInfoWindow extends Application{
 	protected static TextField expirField;
 	protected static Label quantity;
 	protected static TextField quantityField;
-	
-	protected static ComboBox group;
+	protected static Label group;
+	protected static ComboBox groupBox;
 	protected static Button sendAdditionalInfo;
 	
 	protected static String session;
 	protected static String dbResponse;
-	
-	protected static TextField barcodeField;
+	protected static String groups;
+	protected static String id;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s) throws Exception 
+	public static void setStage(Stage stage, String s,String idd) throws Exception 
 	{
+		id=idd;
+		id=id.replace("[[", "");
+		System.out.println(id);
 		session=s;
+		System.out.println(session);
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
 		grid.setVgap(5);
@@ -106,17 +112,45 @@ public class AddAdditionalInfoWindow extends Application{
 		grid.add(notificationsButton,675, 1, 125, 20);
 		
 		expir=new Label("Expiration Date:");
-		grid.add(expir, 150, 50,100,25);
+		grid.add(expir, 100, 120,150,30);
 		expirField=new TextField();
-		grid.add(expirField, 225, 50,100,30);
+		grid.add(expirField, 250, 120,150,30);
 		
 		quantity=new Label("Quantity used:");
-		grid.add(quantity, 150, 100,100,25);
+		grid.add(quantity, 100, 150,150,30);
 		quantityField=new TextField();
-		grid.add(quantityField, 225, 100,100,30);
+		grid.add(quantityField, 250, 150,150,30);
+		
+		getGroups();
+		ObservableList<String> groupList=FXCollections.observableArrayList(groups.split(";"));
+		System.out.println(groupList.get(0));
+		group=new Label("Group ID");
+		grid.add(group, 100, 180,150,30);
+		groupBox=new ComboBox(groupList);
+		grid.add(groupBox, 250, 180,150,30);
 		
 		confirm=new Button("Send");
-		grid.add(confirm, 150,150,100,50 );
+		confirm.getStyleClass().add("menubutton");
+		confirm.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+				try {
+					sendExtra();
+					sendGroup();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		try {
+					AddWindow.setStage(stage,session);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+		grid.add(confirm, 100,250,150,50 );
 		
 		//Create the bottom bar of the program
 		home=new Button("Home");
@@ -168,6 +202,78 @@ public class AddAdditionalInfoWindow extends Application{
 		while((inputLine=in.readLine())!=null)
 			dbResponse=inputLine;
 		System.out.println(dbResponse);
+		in.close();
+	}
+	
+	public static void sendExtra() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String sessionkey=session;
+		String command="updateitem";
+		String expirdate=expirField.getText();
+		String quantityused=quantityField.getText()+"%";
+		String pid=id;
+		String query=String.format("command=%s&sessionkey=%s&percentused=%s&expiration=%s&id=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset),
+				URLEncoder.encode(quantityused,charset),
+				URLEncoder.encode(expirdate,charset),
+				URLEncoder.encode(pid,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			dbResponse=inputLine;
+		System.out.println(dbResponse);
+		in.close();
+	}
+	
+	public static void sendGroup() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String sessionkey=session;
+		String command="updategroup";
+		String groupID=groupBox.getValue().toString();
+		groupID=groupID.replace("(", "");
+		String[] groupIDArray=groupID.split(",");
+		System.out.println(groupIDArray[0]);
+		String grouptosend=groupIDArray[0];
+		String pid=id;
+		
+		String query=String.format("command=%s&sessionkey=%s&group=%s&id=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset),
+				URLEncoder.encode(grouptosend,charset),
+				URLEncoder.encode(pid,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			dbResponse=inputLine;
+		System.out.println(dbResponse);
+		in.close();
+	}
+	public static void getGroups() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getgrouplist";
+		
+		String query=String.format("command=%s&",
+				URLEncoder.encode(command,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			groups=inputLine;
 		in.close();
 	}
 	

@@ -198,12 +198,13 @@ public class AddItemManually extends Application{
 		String expir=expirField.getText();
 		String group=groupBox.getSelectionModel().toString();
 		
-		String query=String.format("command=%s&sessionkey=%s&name=%s&description=%s&manufacturer=%s&amount=%s&expirationdate=%s&group=%s&",
+		String query=String.format("command=%s&sessionkey=%s&barcode=%s&name=%s&description=%s&manufacturer=%s&amount=%s&expiration=%s&group=%s&",
 				URLEncoder.encode(command,charset),
 				URLEncoder.encode(sessionkey,charset),
 				URLEncoder.encode(barcode,charset),
 				URLEncoder.encode(name,charset),
 				URLEncoder.encode(description,charset),
+				URLEncoder.encode(manufacturer,charset),
 				URLEncoder.encode(quantity,charset),
 				URLEncoder.encode(expir,charset),
 				URLEncoder.encode(group,charset));
