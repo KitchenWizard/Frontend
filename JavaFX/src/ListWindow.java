@@ -1,22 +1,24 @@
 import javafx.stage.Stage;
 
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,6 +26,8 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 public class ListWindow extends Application{
@@ -44,7 +48,7 @@ public class ListWindow extends Application{
 	static String session;
 	static String items;
 	static String id;
-	static Stage stage;
+	static Stage stage1;
 	static String[] parsed;
 	static ArrayList addItems;
 	
@@ -55,6 +59,7 @@ public class ListWindow extends Application{
 	
 	public static void setStage(Stage stage,String s, String it) throws Exception 
 	{
+		stage1=stage;
 		session=s;
 		items=it;
 		GridPane grid=new GridPane();
@@ -116,7 +121,7 @@ public class ListWindow extends Application{
 		String newitems=items.replace("[", "");
 		newitems=newitems.replace("]", "");
 		parsed=newitems.split(";");
-		List parsedList=Arrays.asList(parsed);
+		List parsedList=new LinkedList<String>(Arrays.asList(parsed));
 		populate(parsedList);
 		
 		ObservableList data=FXCollections.observableArrayList(addItems);
@@ -194,14 +199,29 @@ public class ListWindow extends Application{
 			HBox infoBox=new HBox();
 			HBox deleteBox=new HBox();
 			
-			Label picture=new Label((String)item.get(7));
-			picture.setPadding(new Insets(1,10,1,10));
-			imageBox.getChildren().add(picture);
+			ImageView selectedImage = new ImageView();
+			String URL=(String)item.get(7+index);
+			URL=URL.replace("'", "");
+			URL=URL.trim();
+			String URLtoSend=URL;
+	        Image image1=new Image(URL);
+	        selectedImage.setImage(image1);
+	        selectedImage.setFitWidth(100);;
+	        selectedImage.setFitHeight(100);
+	        selectedImage.setPreserveRatio(true);
+	        selectedImage.setSmooth(true);
+	        imageBox.getChildren().add(selectedImage);
 			
-			Label name=new Label((String)item.get(2));
+	        String quantity=(String)item.get(9+index);
+			String barcode=(String) item.get(1+index);
+			
+			String idd=(String)item.get(0+index);
+			String nameText=(String)item.get(2+index);
+			Label name=new Label(nameText);
 			name.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(name);
-			Label expir=new Label((String)item.get(6));
+			String expirText=(String)item.get(8+index);
+			Label expir=new Label(expirText);
 			expir.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(expir);
 			Button moreInfo=new Button("More");
@@ -212,7 +232,7 @@ public class ListWindow extends Application{
 				public void handle(ActionEvent event) 
 				{
 					try {
-						ExpandedItemWindow.setStage(stage, session,items,picture,name,expir);;
+						ExpandedItemWindow.setStage(stage1, session,items,URLtoSend,nameText,expirText,barcode,idd,quantity);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -232,18 +252,22 @@ public class ListWindow extends Application{
 					{
 						public void handle(ActionEvent event) 
 						{
-							id=(String) item.get(index);
+							id=(String)item.get(index);
 							try {
+								System.out.println("Trying to remove "+id);
 								sendRemove();
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							//item.remove(index);
-							listView.getItems().remove(index);
-							item.remove(index);
 							try {
-								populate(item);
+								sendList();
+								addItems=new ArrayList();
+								String newitems=items.replace("[", "");
+								newitems=newitems.replace("]", "");
+								parsed=newitems.split(";");
+								List parsedList=new LinkedList<String>(Arrays.asList(parsed));
+								populate(parsedList);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -266,24 +290,26 @@ public class ListWindow extends Application{
 			addItems.add(hbox);
 		}
 	}
-	
-	public static void saveImage(String imageUrl, String destinationFile) throws IOException 
+	public static void sendList() throws IOException
 	{
-	    URL url = new URL(imageUrl);
-	    InputStream is = url.openStream();
-	    OutputStream os = new FileOutputStream(destinationFile);
-	
-	    byte[] b = new byte[2048];
-	    int length;
-	
-	    while ((length = is.read(b)) != -1) {
-	        os.write(b, 0, length);
-	    }
-	
-	    is.close();
-	    os.close();
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getitems";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			items=inputLine;
+		System.out.println(items);
+		in.close();
 	}
-	
 	public static void sendRemove() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");

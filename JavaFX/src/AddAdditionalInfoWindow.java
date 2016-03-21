@@ -44,17 +44,18 @@ public class AddAdditionalInfoWindow extends Application{
 	protected static String dbResponse;
 	protected static String groups;
 	protected static String id;
+	protected static String barcode;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s,String idd) throws Exception 
+	public static void setStage(Stage stage, String s,String idd,String b) throws Exception 
 	{
+		barcode=b;
 		id=idd;
 		id=id.replace("[[", "");
-		System.out.println(id);
 		session=s;
 		System.out.println(session);
 		GridPane grid=new GridPane();
@@ -91,9 +92,6 @@ public class AddAdditionalInfoWindow extends Application{
 		line.setValignment(VPos.CENTER);
 		grid.add(line, 0, 25,800,2);
 
-		
-		
-		
 		notificationsButton=new Button(notificationsNum+" Notifications");
 		notificationsButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -123,11 +121,10 @@ public class AddAdditionalInfoWindow extends Application{
 		
 		getGroups();
 		ObservableList<String> groupList=FXCollections.observableArrayList(groups.split(";"));
-		System.out.println(groupList.get(0));
 		group=new Label("Group ID");
 		grid.add(group, 100, 180,150,30);
 		groupBox=new ComboBox(groupList);
-		grid.add(groupBox, 250, 180,150,30);
+		grid.add(groupBox, 250, 180,300,30);
 		
 		confirm=new Button("Send");
 		confirm.getStyleClass().add("menubutton");
@@ -241,14 +238,14 @@ public class AddAdditionalInfoWindow extends Application{
 		groupID=groupID.replace("(", "");
 		String[] groupIDArray=groupID.split(",");
 		System.out.println(groupIDArray[0]);
-		String grouptosend=groupIDArray[0];
-		String pid=id;
+		String grouptosend=groupIDArray[0].trim();
+		String barcodesend=barcode;
 		
-		String query=String.format("command=%s&sessionkey=%s&group=%s&id=%s&",
+		String query=String.format("command=%s&sessionkey=%s&groupid=%s&barcode=%s&",
 				URLEncoder.encode(command,charset),
 				URLEncoder.encode(sessionkey,charset),
 				URLEncoder.encode(grouptosend,charset),
-				URLEncoder.encode(pid,charset));
+				URLEncoder.encode(barcodesend,charset));
 		
 		URLConnection connection=new URL(url+"?"+query).openConnection();
 		connection.setRequestProperty("Accept-Charset", charset);

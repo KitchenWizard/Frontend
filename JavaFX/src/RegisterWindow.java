@@ -83,7 +83,7 @@ public class RegisterWindow extends Application{
 		
 		registerLabel=new Label("Please Register for Kitchen Wizard");
 		registerLabel.getStyleClass().add("title");
-		grid.add(registerLabel, 200, 55,400,50);
+		grid.add(registerLabel, 200, 55,500,50);
 		
 		//Create the label and field for the First Name
     	fNameLabel=new Label("First Name: ");

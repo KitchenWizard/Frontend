@@ -16,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 
 public class LoginWindow extends Application{
@@ -47,7 +48,7 @@ public class LoginWindow extends Application{
 		grid.setPadding(new Insets(5,5,5,5));
 		grid.setVgap(5);
 		grid.setHgap(5);
-		Scene scene = new Scene(grid, 800, 480);
+		Scene scene = new Scene(grid, 800, 450);
 
 		File f=new File("Style.css");
 		scene.getStylesheets().add("file:///"+f.getAbsolutePath().replace("\\", "/"));

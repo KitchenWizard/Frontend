@@ -104,23 +104,24 @@ public class AddWindow extends Application{
 						dbResponse.replace("[","");
 						dbResponse.replace("]", "");
 						String[] itemDetails=dbResponse.split(";");
-						System.out.println(itemDetails[6]);
-						System.out.println(itemDetails[6].equals(" 'None']"));
+						System.out.println(itemDetails[0]);
 						if(itemDetails[0]!=null)
 						{
 							if(!itemDetails[0].equals("'ADD_FAILED'"))
 							{
-								if(!itemDetails[0].equals("'ADD_FAILED_PRODUCT_NOT_IN_API'"))
+								if(!itemDetails[0].equals("['ADD_FAILED_PRODUCT_NOT_IN_API'"))
 								{
 									Label added=new Label("Item Added");
 									grid.add(added, 300, 200,200,50);
-									if(itemDetails[6].equals(" 'None']"))
+									System.out.println(itemDetails[4]);
+									if(itemDetails[4].equals(" 'None']"))
 									{
-										AddAdditionalInfoWindow.setStage(stage,session,itemDetails[0]);
+										AddAdditionalInfoWindow.setStage(stage,session,itemDetails[0],barcode);
 									}
 								}
 								else
 								{
+									System.out.println("Manual");
 									Label notInAPI=new Label("Product not in API.  Please add manually");
 									grid.add(notInAPI, 300, 200,300,50);
 									TimeUnit.SECONDS.sleep(5);

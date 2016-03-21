@@ -39,6 +39,7 @@ public class AddRecipeWindow extends Application{
 	protected static TextField nameField;
 	protected static TextField descriptionField;
 	protected static ComboBox itemsBox;
+	protected static TextField amount;
 	protected static TextField prepField;
 	protected static TextField cookField;
 	
@@ -97,7 +98,8 @@ public class AddRecipeWindow extends Application{
 		System.out.println(groupList.get(0));
 		itemsBox=new ComboBox(groupList);
 		grid.add(itemsBox,200, 130, 100,30);
-		
+		amount=new TextField();
+		grid.add(amount, 350, 130,100,30);
 		
 		prep=new Label("Prep Time:");
 		grid.add(prep, 100, 170,100,30);
@@ -108,9 +110,21 @@ public class AddRecipeWindow extends Application{
 		grid.add(cook, 100, 210,100,30);
 		cookField=new TextField();
 		grid.add(cookField, 200, 210,100,30);
-		
+	
 		confirm=new Button("Send");
 		confirm.getStyleClass().add("menubutton");
+		confirm.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+					getRecipe();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
 		grid.add(confirm, 200, 250,200,50);
 		
 		back=new Button("Back");
@@ -146,6 +160,42 @@ public class AddRecipeWindow extends Application{
 
 	public void start(Stage primaryStage) throws Exception 
 	{	
+	}
+	public static void getRecipe() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="addrecipe";
+		String sessionkey=session;
+		String name=nameField.getText();
+		String description=descriptionField.getText();
+		String groupID=itemsBox.getValue().toString();
+		String[] groupIDArray=groupID.split(",");
+		String grouptosend=groupIDArray[0];
+		grouptosend=grouptosend.trim();
+		grouptosend=grouptosend.replace("(", "");
+		String amount1=amount.getText();
+		String prep=prepField.getText();
+		String cook=cookField.getText();
+		String toSend=grouptosend+'`'+amount1;
+		
+		String query=String.format("command=%s&sessionkey=%s&name=%s&description=%s&ingredients=%s&preptime=%s&cooktime=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset),
+				URLEncoder.encode(name,charset),
+				URLEncoder.encode(description,charset),
+				URLEncoder.encode(toSend,charset),
+				URLEncoder.encode(prep,charset),
+				URLEncoder.encode(cook,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			groups=inputLine;
+		System.out.println(groups);
+		in.close();
 	}
 	public static void getGroups() throws IOException
 	{

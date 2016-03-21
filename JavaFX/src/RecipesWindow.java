@@ -35,6 +35,7 @@ public class RecipesWindow extends Application{
 	protected static Button viewRecipes;
 	
 	static String session;
+	protected static String recipes;
 	
 	public static void main(String[] args) 
 	{
@@ -109,7 +110,7 @@ public class RecipesWindow extends Application{
 				}
         	}
         });
-		grid.add(addRecipe, 200, 200,300,100);
+		grid.add(addRecipe, 300, 200,300,100);
 		
 		viewRecipes=new Button("View Recipes");
 		viewRecipes.getStyleClass().add("menubutton");
@@ -118,7 +119,8 @@ public class RecipesWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					RecipesListWindow.setStage(stage,session);
+        			sendRecipeList();
+					RecipesListWindow.setStage(stage,session,recipes);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -157,7 +159,26 @@ public class RecipesWindow extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	
+	public static void sendRecipeList() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getrecipes";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			recipes=inputLine;
+		System.out.println(recipes);
+		in.close();
+	}
 	//sendNotifications which will get the current list of notifications from the database
 	public void sendNotifications() throws IOException
 	{

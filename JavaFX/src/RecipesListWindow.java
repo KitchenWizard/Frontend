@@ -1,16 +1,16 @@
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -22,11 +22,14 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 public class RecipesListWindow extends Application{
 	
-	
+	//((1, 'Food', 'Eat', '', 0, 0, 'nik', datetime.datetime(2016, 3, 20, 22, 17, 36)), (2, 'Food', 'Eat', '', 100, 1, 'nik', datetime.datetime(2016, 3, 20, 22, 19, 6)), (3, 'food', 'eat', '', 1, 2, 'nik', datetime.datetime(2016, 3, 20, 22, 23, 58)), (4, 'Food`', 'Eat', '', 1, 2, 'nik', datetime.datetime(2016, 3, 20, 22, 25, 11)), (5, 'Food`', 'Eat', '', 1, 2, 'nik', datetime.datetime(2016, 3, 20, 22, 25, 29)), (6, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 34, 6)), (7, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 35, 52)), (8, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 37, 14)), (9, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 39, 24)), (10, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 40, 35)), (11, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 43, 19)), (12, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 46, 14)), (13, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 47)), (14, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 49, 20)), (15, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 52, 1)), (16, 'food', 'eat', '', 2, 3, 'nik', datetime.datetime(2016, 3, 20, 22, 53, 24)), (17, 'food', 'eat', '', 1, 2, 'nik', datetime.datetime(2016, 3, 20, 22, 57, 3)))
+	//items structured like this
 	protected static Label logo;
 	protected static int notificationsNum;
 	protected static Button notificationsButton;
@@ -41,7 +44,7 @@ public class RecipesListWindow extends Application{
 	static String session;
 	static String items;
 	static String id;
-	static Stage stage;
+	static Stage stage1;
 	static String[] parsed;
 	static ArrayList addItems;
 	
@@ -52,6 +55,7 @@ public class RecipesListWindow extends Application{
 	
 	public static void setStage(Stage stage,String s, String it) throws Exception 
 	{
+		stage1=stage;
 		session=s;
 		items=it;
 		GridPane grid=new GridPane();
@@ -113,7 +117,8 @@ public class RecipesListWindow extends Application{
 		String newitems=items.replace("[", "");
 		newitems=newitems.replace("]", "");
 		parsed=newitems.split(";");
-		populate(parsed);
+		List parsedList=new LinkedList<String>(Arrays.asList(parsed));
+		populate(parsedList);
 		
 		ObservableList data=FXCollections.observableArrayList(addItems);
 		listView.setItems(data);
@@ -154,13 +159,13 @@ public class RecipesListWindow extends Application{
 		grid.add(expirSort,700, 455, 75, 20);
 		
 		//Create the bottom bar of the program
-		home=new Button("Home");
+		home=new Button("Back");
 		home.setOnAction(new EventHandler<ActionEvent>()
         {
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+					RecipesWindow.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -175,13 +180,13 @@ public class RecipesListWindow extends Application{
 		line2.setValignment(VPos.CENTER);
     	grid.add(line2, 0, 450, 800, 2);
 
-		stage.setTitle("Kitchen Wizard -Your List");
+		stage.setTitle("Kitchen Wizard -Your List of Recipes");
         stage.setScene(scene);
 	}
 
-	public static void populate(String[] item) throws IOException
+	public static void populate(List item) throws IOException
 	{
-		for(int i=0;i<item.length-1;i+=10)
+		for(int i=0;i<item.size()-1;i+=8)
 		{
 			int index=i;
 			HBox hbox=new HBox();
@@ -190,16 +195,15 @@ public class RecipesListWindow extends Application{
 			HBox infoBox=new HBox();
 			HBox deleteBox=new HBox();
 			
-			Label picture=new Label(item[7]);
-			picture.setPadding(new Insets(1,10,1,10));
-			imageBox.getChildren().add(picture);
-			
-			Label name=new Label(item[2]);
+			String idd=(String)item.get(0+index);
+			String nameText=(String)item.get(1+index);
+			Label name=new Label(nameText);
 			name.setPadding(new Insets(1,10,1,10));
 			infoBox.getChildren().add(name);
-			Label expir=new Label(item[6]);
-			expir.setPadding(new Insets(1,10,1,10));
-			infoBox.getChildren().add(expir);
+			String cookText=(String)item.get(5+index);
+			Label cook=new Label(cookText+" minutes");
+			cook.setPadding(new Insets(1,10,1,10));
+			infoBox.getChildren().add(cook);
 			Button moreInfo=new Button("More");
 			moreInfo.setPadding(new Insets(1,10,1,10));
 			moreInfo.getStyleClass().add("notificationsbutton");
@@ -208,7 +212,7 @@ public class RecipesListWindow extends Application{
 				public void handle(ActionEvent event) 
 				{
 					try {
-						ExpandedItemWindow.setStage(stage, session,items,picture,name,expir);;
+						//ExpandedRecipeWindow.setStage(stage1, session,items,nameText,expirText,barcode,idd,quantity);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -228,17 +232,22 @@ public class RecipesListWindow extends Application{
 					{
 						public void handle(ActionEvent event) 
 						{
-							id=item[index];
+							id=(String)item.get(index);
 							try {
+								System.out.println("Trying to remove "+id);
 								sendRemove();
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							//item.remove(index);
-							listView.getItems().remove(index);
 							try {
-								populate(item);
+								sendList();
+								addItems=new ArrayList();
+								String newitems=items.replace("[", "");
+								newitems=newitems.replace("]", "");
+								parsed=newitems.split(";");
+								List parsedList=new LinkedList<String>(Arrays.asList(parsed));
+								populate(parsedList);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -261,30 +270,31 @@ public class RecipesListWindow extends Application{
 			addItems.add(hbox);
 		}
 	}
-	
-	public static void saveImage(String imageUrl, String destinationFile) throws IOException 
+	public static void sendList() throws IOException
 	{
-	    URL url = new URL(imageUrl);
-	    InputStream is = url.openStream();
-	    OutputStream os = new FileOutputStream(destinationFile);
-	
-	    byte[] b = new byte[2048];
-	    int length;
-	
-	    while ((length = is.read(b)) != -1) {
-	        os.write(b, 0, length);
-	    }
-	
-	    is.close();
-	    os.close();
-	}
-	
-	public static void sendRemove() throws IOException
-	{
-		
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
-		String command="removeitem";
+		String command="getitems";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			items=inputLine;
+		System.out.println(items);
+		in.close();
+	}
+	public static void sendRemove() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="removerecipe";
 		String id1=id;
 		String sessionkey=session;
 		

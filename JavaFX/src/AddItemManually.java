@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -40,11 +42,11 @@ public class AddItemManually extends Application{
 	protected static TextField quantityField;
 	protected static Label group;
 	protected static ComboBox groupBox;
+	protected static String groups;
 	
 	protected static String session;
 	protected static String dbResponse;
 	
-	protected static TextField barcodeField;
 	protected static String barcode;
 	
 	public static void main(String[] args) 
@@ -131,10 +133,13 @@ public class AddItemManually extends Application{
 		grid.add(expir, 100, 240,150,30);
 		expirField=new TextField();
 		grid.add(expirField, 250, 240,100,30);
-		
+
+		getGroups();
+		ObservableList<String> groupList=FXCollections.observableArrayList(groups.split(";"));
 		group=new Label("Group ID");
-		grid.add(group, 100, 270,150,30);
-		groupBox=new ComboBox();
+		grid.add(group, 100, 270,500,30);
+		groupBox=new ComboBox(groupList);
+		
 		grid.add(groupBox, 250, 270,100,30);
 		
 		confirm=new Button("Send");
@@ -145,12 +150,17 @@ public class AddItemManually extends Application{
 			{
 				try {
 					sendItem();
+					AddWindow.setStage(stage, session);
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
     	});
+		confirm.setMinSize(225, 50);
 		grid.add(confirm, 550,200,150,50 );
 		
 		//Create the bottom bar of the program
@@ -189,25 +199,35 @@ public class AddItemManually extends Application{
 		
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
-		String command="additemmanually";
+		String command="manualadd";
 		String sessionkey=session;
+		String barcode1=barcode;
 		String name=nameField.getText();
 		String description=descriptionField.getText();
 		String manufacturer=manufacturerField.getText();
 		String quantity=quantityField.getText();
 		String expir=expirField.getText();
-		String group=groupBox.getSelectionModel().toString();
-		
-		String query=String.format("command=%s&sessionkey=%s&barcode=%s&name=%s&description=%s&manufacturer=%s&amount=%s&expiration=%s&group=%s&",
+		if(expir.equals(null))
+		{
+			expir="na";
+		}
+		String group=groupBox.getValue().toString();
+		if(group.equals(null))
+		{
+			group="na";
+		}
+		System.out.println(sessionkey);
+		System.out.println(description);
+		String query=String.format("command=%s&barcode=%s&name=%s&description=%s&manufacturer=%s&amount=%s&expiration=%s&group=%s&sessionkey=%s&",
 				URLEncoder.encode(command,charset),
-				URLEncoder.encode(sessionkey,charset),
-				URLEncoder.encode(barcode,charset),
+				URLEncoder.encode(barcode1,charset),
 				URLEncoder.encode(name,charset),
 				URLEncoder.encode(description,charset),
 				URLEncoder.encode(manufacturer,charset),
 				URLEncoder.encode(quantity,charset),
 				URLEncoder.encode(expir,charset),
-				URLEncoder.encode(group,charset));
+				URLEncoder.encode(group,charset),
+				URLEncoder.encode(sessionkey,charset));
 		
 		URLConnection connection=new URL(url+"?"+query).openConnection();
 		connection.setRequestProperty("Accept-Charset", charset);
@@ -218,7 +238,23 @@ public class AddItemManually extends Application{
 		System.out.println(dbResponse);
 		in.close();
 	}
-	
+	public static void getGroups() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getgrouplist";
+		
+		String query=String.format("command=%s&",
+				URLEncoder.encode(command,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			groups=inputLine;
+		in.close();
+	}
 	
 	
 	//sendNotifications which will get the current list of notifications from the database
