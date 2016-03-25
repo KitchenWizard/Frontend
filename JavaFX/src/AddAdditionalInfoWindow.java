@@ -17,41 +17,39 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
 public class AddAdditionalInfoWindow extends Application{
 	
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected  Label logo;
+	protected  int notificationsNum;
+	protected  Button notificationsButton;
 	
-	protected static Button home;
-	protected static Button confirm;
+	protected  Button home;
+	protected  Button confirm;
 	
-	protected static Label picture;
-	protected static Label name;
-	protected static Label expir;
-	protected static TextField expirField;
-	protected static Label quantity;
-	protected static TextField quantityField;
-	protected static Label group;
-	protected static ComboBox groupBox;
-	protected static Button sendAdditionalInfo;
+	protected  Label picture;
+	protected  Label name;
+	protected  Label expir;
+	protected  TextField expirField;
+	protected  Label quantity;
+	protected  TextField quantityField;
+	protected  Label group;
+	protected  ComboBox groupBox;
+	protected  Button sendAdditionalInfo;
 	
-	protected static String session;
-	protected static String dbResponse;
-	protected static String groups;
-	protected static String id;
-	protected static String barcode;
+	protected  String session;
+	protected  String dbResponse;
+	protected  String groups;
+	protected  String id;
+	protected  String barcode;
 	
-	public static void main(String[] args) 
+	public  void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s,String idd,String b) throws Exception 
+	public  void setStage(Stage stage, String s,String idd,String b) throws Exception 
 	{
 		barcode=b;
 		id=idd;
@@ -140,7 +138,8 @@ public class AddAdditionalInfoWindow extends Application{
 					e1.printStackTrace();
 				}
         		try {
-					AddWindow.setStage(stage,session);
+        			AddWindow add=new AddWindow();
+					add.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -156,7 +155,8 @@ public class AddAdditionalInfoWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+        			HomeWindow home=new HomeWindow();
+					home.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -180,7 +180,7 @@ public class AddAdditionalInfoWindow extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	public static void sendItem() throws IOException
+	public  void sendItem() throws IOException
 	{
 		
 		URL url=new URL("http://52.36.126.156:8080/");
@@ -202,7 +202,7 @@ public class AddAdditionalInfoWindow extends Application{
 		in.close();
 	}
 	
-	public static void sendExtra() throws IOException
+	public  void sendExtra() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -228,7 +228,7 @@ public class AddAdditionalInfoWindow extends Application{
 		in.close();
 	}
 	
-	public static void sendGroup() throws IOException
+	public  void sendGroup() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -256,7 +256,7 @@ public class AddAdditionalInfoWindow extends Application{
 		System.out.println(dbResponse);
 		in.close();
 	}
-	public static void getGroups() throws IOException
+	public  void getGroups() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

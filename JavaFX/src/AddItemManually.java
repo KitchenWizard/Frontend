@@ -17,44 +17,42 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
 public class AddItemManually extends Application{
 	
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected  Label logo;
+	protected  int notificationsNum;
+	protected  Button notificationsButton;
 	
-	protected static Button home;
-	protected static Button confirm;
+	protected  Button home;
+	protected  Button confirm;
 	
-	protected static Label name;
-	protected static TextField nameField;
-	protected static Label description;
-	protected static TextField descriptionField;
-	protected static Label manufacturer;
-	protected static TextField manufacturerField;
-	protected static Label expir;
-	protected static TextField expirField;
-	protected static Label quantity;
-	protected static TextField quantityField;
-	protected static Label group;
-	protected static ComboBox groupBox;
-	protected static String groups;
+	protected  Label name;
+	protected  TextField nameField;
+	protected  Label description;
+	protected  TextField descriptionField;
+	protected  Label manufacturer;
+	protected  TextField manufacturerField;
+	protected  Label expir;
+	protected  TextField expirField;
+	protected  Label quantity;
+	protected  TextField quantityField;
+	protected  Label group;
+	protected  ComboBox groupBox;
+	protected  String groups;
 	
-	protected static String session;
-	protected static String dbResponse;
+	protected  String session;
+	protected  String dbResponse;
 	
-	protected static String barcode;
+	protected  String barcode;
 	
-	public static void main(String[] args) 
+	public  void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s,String b) throws Exception 
+	public  void setStage(Stage stage, String s,String b) throws Exception 
 	{
 		barcode=b;
 		session=s;
@@ -150,7 +148,8 @@ public class AddItemManually extends Application{
 			{
 				try {
 					sendItem();
-					AddWindow.setStage(stage, session);
+					AddWindow add=new AddWindow();
+					add.setStage(stage, session);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -170,7 +169,8 @@ public class AddItemManually extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+        			HomeWindow home=new HomeWindow();
+					home.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -194,7 +194,7 @@ public class AddItemManually extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	public static void sendItem() throws IOException
+	public  void sendItem() throws IOException
 	{
 		
 		URL url=new URL("http://52.36.126.156:8080/");
@@ -238,7 +238,7 @@ public class AddItemManually extends Application{
 		System.out.println(dbResponse);
 		in.close();
 	}
-	public static void getGroups() throws IOException
+	public  void getGroups() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

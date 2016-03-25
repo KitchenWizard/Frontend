@@ -1,7 +1,5 @@
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 
 public class MainStage extends Application{
@@ -13,7 +11,8 @@ public class MainStage extends Application{
 	
 	public void start(Stage stage) throws Exception 
 	{
-		LoginWindow.setStage(stage);
+		LoginWindow starter=new LoginWindow();
+		starter.setStage(stage);
         stage.show();
 	}
 }

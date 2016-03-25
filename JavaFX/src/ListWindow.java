@@ -1,8 +1,5 @@
 import javafx.stage.Stage;
-
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +15,6 @@ import java.util.LinkedList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,30 +30,30 @@ public class ListWindow extends Application{
 	
 	//[[40; '076677100145'; 'FAMOUS AMOS FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS'; '2 oz'; 'NONE'; 'http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png'; 'NONE'; '0%']; [41; '076677100145'; 'FAMOUS AMOS FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS, BITE SIZE COOKIES, CHOCOLATE CHIP'; 'FAMOUS AMOS'; '2 oz'; 'NONE'; 'http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png'; 'NONE'; '0%']]
 	//items structured like this
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected Label logo;
+	protected int notificationsNum;
+	protected Button notificationsButton;
 	
-	protected static Button home;
+	protected Button home;
 	
-	protected static ListView listView;
-	protected static Button alphaSort;
-	protected static Button expirSort;
-	protected static Button delete;
+	protected ListView listView;
+	protected Button alphaSort;
+	protected Button expirSort;
+	protected Button delete;
 	
-	static String session;
-	static String items;
-	static String id;
-	static Stage stage1;
-	static String[] parsed;
-	static ArrayList addItems;
+	String session;
+	String items;
+	String id;
+	Stage stage1;
+	String[] parsed;
+	ArrayList addItems;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage,String s, String it) throws Exception 
+	public void setStage(Stage stage,String s, String it) throws Exception 
 	{
 		stage1=stage;
 		session=s;
@@ -169,7 +165,9 @@ public class ListWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+        			addItems=null;
+        			HomeWindow home=new HomeWindow();
+        			home.setStage(stage1, session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -188,7 +186,7 @@ public class ListWindow extends Application{
         stage.setScene(scene);
 	}
 
-	public static void populate(List item) throws IOException
+	public void populate(List item) throws IOException
 	{
 		for(int i=0;i<item.size()-1;i+=10)
 		{
@@ -232,7 +230,8 @@ public class ListWindow extends Application{
 				public void handle(ActionEvent event) 
 				{
 					try {
-						ExpandedItemWindow.setStage(stage1, session,items,URLtoSend,nameText,expirText,barcode,idd,quantity);
+						ExpandedItemWindow eiw=new ExpandedItemWindow();
+						eiw.setStage(stage1, session,items,URLtoSend,nameText,expirText,barcode,idd,quantity);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -252,8 +251,8 @@ public class ListWindow extends Application{
 					{
 						public void handle(ActionEvent event) 
 						{
-							id=(String)item.get(index);
 							try {
+								id=idd;
 								System.out.println("Trying to remove "+id);
 								sendRemove();
 							} catch (IOException e1) {
@@ -268,6 +267,8 @@ public class ListWindow extends Application{
 								parsed=newitems.split(";");
 								List parsedList=new LinkedList<String>(Arrays.asList(parsed));
 								populate(parsedList);
+								ObservableList data=FXCollections.observableArrayList(addItems);
+								listView.setItems(data);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -290,7 +291,7 @@ public class ListWindow extends Application{
 			addItems.add(hbox);
 		}
 	}
-	public static void sendList() throws IOException
+	public void sendList() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -310,7 +311,7 @@ public class ListWindow extends Application{
 		System.out.println(items);
 		in.close();
 	}
-	public static void sendRemove() throws IOException
+	public void sendRemove() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

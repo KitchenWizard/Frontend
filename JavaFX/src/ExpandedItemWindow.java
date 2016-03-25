@@ -23,40 +23,41 @@ import javafx.scene.layout.*;
 
 public class ExpandedItemWindow extends Application{
 	
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
-	protected static Button back;
+	protected Label logo;
+	protected int notificationsNum;
+	protected Button notificationsButton;
+	protected Button back;
 	
-	protected static ImageView picture;
-	protected static String name;
-	protected static String expir;
-	protected static Label qunatity;
-	protected static Label group;
-	protected static ComboBox groupBox;
-	protected static Label quantity;
+	protected ImageView picture;
+	protected String name;
+	protected String expir;
+	protected Label qunatity;
+	protected Label group;
+	protected ComboBox groupBox;
+	protected Label quantity;
 	
-	protected static TextField expirField;
-	protected static TextField quantityField;
-	protected static String groups;
+	protected TextField expirField;
+	protected TextField quantityField;
+	protected String groups;
 	
-	protected static String session;
-	protected static String newitems;
-	protected static String items;
-	protected static String dbResponse;
-	protected static String id;
-	protected static String barcode;
-	protected static String URL;
-	protected static String quantityString;
+	protected String session;
+	protected  String newitems;
+	protected  String items;
+	protected  String dbResponse;
+	protected  String id;
+	protected  String barcode;
+	protected  String URL;
+	protected  String quantityString;
 	
-	protected static Button confirm;
+	protected  Button confirm;
+	protected Button addShoppingList;
 	
-	public static void main(String[] args) 
+	public  void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s,String it,String u,String n,String e,String b,String idd,String q) throws Exception 
+	public  void setStage(Stage stage, String s,String it,String u,String n,String e,String b,String idd,String q) throws Exception 
 	{
 		id=idd;
 		items=it;
@@ -176,6 +177,22 @@ public class ExpandedItemWindow extends Application{
 		confirm.getStyleClass().add("menubutton");
 		grid.add(confirm, 350,300,200,100);
 		
+		addShoppingList=new Button("Add To Shopping List");
+		addShoppingList.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+        			sendShoppingList();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+		addShoppingList.getStyleClass().add("menubutton");
+		grid.add(addShoppingList, 350, 400,300,100);
+		
 		//Create the bottom bar of the program
 		back=new Button("Back");
 		back.setOnAction(new EventHandler<ActionEvent>()
@@ -183,13 +200,8 @@ public class ExpandedItemWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-        			//sendList();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}try {
-					HomeWindow.setStage(stage, session);
-					//ListWindow.setStage(stage,session,newitems);
+					ListWindow home=new ListWindow();
+					home.setStage(stage, session,items);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -212,7 +224,7 @@ public class ExpandedItemWindow extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		
 	}
-	public static void sendList() throws IOException
+	public  void sendList() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -232,7 +244,28 @@ public class ExpandedItemWindow extends Application{
 		System.out.println(newitems);
 		in.close();
 	}
-	public static void getGroups() throws IOException
+	public void sendShoppingList() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="addtolist";
+		String sessionkey=session;
+		String idd=id;
+		
+		String query=String.format("command=%s&sessionkey=%s&id=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset),
+				URLEncoder.encode(idd,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			System.out.println(inputLine);
+		in.close();
+	}
+	public  void getGroups() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -250,7 +283,7 @@ public class ExpandedItemWindow extends Application{
 		in.close();
 	}
 	
-	public static void sendExtra() throws IOException
+	public  void sendExtra() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
@@ -276,7 +309,7 @@ public class ExpandedItemWindow extends Application{
 		in.close();
 	}
 	
-	public static void sendGroup() throws IOException
+	public  void sendGroup() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

@@ -2,23 +2,16 @@ import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,23 +19,23 @@ import javafx.scene.layout.*;
 
 public class RecipesWindow extends Application{
 	
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected  Label logo;
+	protected  int notificationsNum;
+	protected  Button notificationsButton;
 	
-	protected static Button home;
-	protected static Button addRecipe;
-	protected static Button viewRecipes;
+	protected  Button home;
+	protected  Button addRecipe;
+	protected  Button viewRecipes;
 	
-	static String session;
-	protected static String recipes;
+	 String session;
+	protected  String recipes;
 	
-	public static void main(String[] args) 
+	public  void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage,String s) throws Exception 
+	public  void setStage(Stage stage,String s) throws Exception 
 	{
 		session=s;
 		GridPane grid=new GridPane();
@@ -120,7 +113,8 @@ public class RecipesWindow extends Application{
         	{
         		try {
         			sendRecipeList();
-					RecipesListWindow.setStage(stage,session,recipes);
+        			RecipesListWindow rlw=new RecipesListWindow();
+					rlw.setStage(stage,session,recipes);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -136,7 +130,8 @@ public class RecipesWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+        			HomeWindow home=new HomeWindow();
+					home.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -159,7 +154,7 @@ public class RecipesWindow extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	public static void sendRecipeList() throws IOException
+	public void sendRecipeList() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

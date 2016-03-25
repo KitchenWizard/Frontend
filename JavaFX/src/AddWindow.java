@@ -31,25 +31,25 @@ public class AddWindow extends Application{
 	
 	//ADD_FAILED
 	//Account for this
-	protected static Label logo;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected  Label logo;
+	protected  int notificationsNum;
+	protected  Button notificationsButton;
 	
-	protected static Label addLabel;
-	protected static Button home;
+	protected  Label addLabel;
+	protected  Button home;
 	
-	protected static String session;
-	protected static String barcode;
-	protected static String dbResponse;
+	protected  String session;
+	protected  String barcode;
+	protected  String dbResponse;
 	
-	protected static TextField barcodeField;
+	protected  TextField barcodeField;
 	
-	public static void main(String[] args) 
+	public  void main(String[] args) 
 	{
         launch(args);
     }
 	
-	public static void setStage(Stage stage, String s) throws Exception 
+	public  void setStage(Stage stage, String s) throws Exception 
 	{
 		session=s;
 		GridPane grid=new GridPane();
@@ -116,7 +116,8 @@ public class AddWindow extends Application{
 									System.out.println(itemDetails[4]);
 									if(itemDetails[4].equals(" 'None']"))
 									{
-										AddAdditionalInfoWindow.setStage(stage,session,itemDetails[0],barcode);
+										AddAdditionalInfoWindow aaiw=new AddAdditionalInfoWindow();
+										aaiw.setStage(stage,session,itemDetails[0],barcode);
 									}
 								}
 								else
@@ -125,7 +126,8 @@ public class AddWindow extends Application{
 									Label notInAPI=new Label("Product not in API.  Please add manually");
 									grid.add(notInAPI, 300, 200,300,50);
 									TimeUnit.SECONDS.sleep(5);
-									AddItemManually.setStage(stage, session, barcode);
+									AddItemManually man=new AddItemManually();
+									man.setStage(stage, session, barcode);
 									//REQUIRED - Barcode, name, description, manufacturer sessionkey
 									//EXTRA - Quantity, Group ID
 									
@@ -176,7 +178,8 @@ public class AddWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					HomeWindow.setStage(stage,session);
+        			HomeWindow home=new HomeWindow();
+					home.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -200,7 +203,7 @@ public class AddWindow extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-	public static void sendItem() throws IOException
+	public  void sendItem() throws IOException
 	{
 		
 		URL url=new URL("http://52.36.126.156:8080/");

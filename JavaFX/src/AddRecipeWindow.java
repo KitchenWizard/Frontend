@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -99,7 +98,7 @@ public class AddRecipeWindow extends Application{
 		itemsBox=new ComboBox(groupList);
 		grid.add(itemsBox,200, 130, 100,30);
 		amount=new TextField();
-		grid.add(amount, 350, 130,100,30);
+		grid.add(amount, 300, 130,100,30);
 		
 		prep=new Label("Prep Time:");
 		grid.add(prep, 100, 170,100,30);
@@ -133,7 +132,8 @@ public class AddRecipeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					RecipesWindow.setStage(stage,session);
+        			RecipesWindow recipes=new RecipesWindow();
+					recipes.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

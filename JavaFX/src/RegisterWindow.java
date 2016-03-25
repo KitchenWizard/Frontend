@@ -21,35 +21,37 @@ import javafx.scene.layout.*;
 public class RegisterWindow extends Application{
 
 	//Create components that will be added later
-	protected static TextField usernameField;
-    protected static PasswordField passwordField;
-    protected static Label usernameLabel;
-    protected static Label passwordLabel;
-	protected static Button register;
-	protected static TextField fName;
-	protected static TextField lName;
-	protected static TextField emailField;
-	protected static Label fNameLabel;
-	protected static Label lNameLabel;
-	protected static Label emailLabel;
+	protected TextField usernameField;
+    protected PasswordField passwordField;
+    protected Label usernameLabel;
+    protected Label passwordLabel;
+	protected Button register;
+	protected TextField fName;
+	protected TextField lName;
+	protected TextField emailField;
+	protected Label fNameLabel;
+	protected Label lNameLabel;
+	protected Label emailLabel;
 	
-	protected static Label logo;
-	protected static Button back;
-	protected static Label registerLabel;
+	protected Label logo;
+	protected Button back;
+	protected Label registerLabel;
+	protected Label accountCreated;
+	protected Label noConnection;
 	
 	//PASS IN THIS ORDER
-	protected static String username;
-	protected static String fname;
-	protected static String lname;
-	protected static String email;
-	protected static String password;
-	protected static String hash;
+	protected String username;
+	protected String fname;
+	protected String lname;
+	protected String email;
+	protected String password;
+	protected String hash;
 	
-	protected static String session;
-	protected static String dbResult;
+	protected String session;
+	protected String dbResult;
 	
 	
-	public static void setStage(Stage stage) throws Exception 
+	public void setStage(Stage stage) throws Exception 
 	{
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
@@ -119,6 +121,16 @@ public class RegisterWindow extends Application{
         
         passwordField=new PasswordField();
         grid.add(passwordField,195, 240, 150, 30);
+
+		accountCreated=new Label("Account Created, Returning to Home Screen");
+		accountCreated.getStyleClass().add("success");
+		accountCreated.setVisible(false);
+		grid.add(accountCreated,285,280,250,100);
+		
+		noConnection=new Label("Can't connect to database");
+		noConnection.getStyleClass().add("warning");
+		noConnection.setVisible(false);
+		grid.add(noConnection, 310, 285,200,100);
     	
         //Create the register button
     	register=new Button("Register");
@@ -137,17 +149,14 @@ public class RegisterWindow extends Application{
 					sendRequest();
 					if(dbResult.equals("Account Created"))
 					{
-						Label accountCreated=new Label("Account Created, Returning to Home Screen");
-						accountCreated.getStyleClass().add("success");
-						grid.add(accountCreated,285,280,250,100);
+						accountCreated.setVisible(true);
 						TimeUnit.SECONDS.sleep(5);
-						LoginWindow.setStage(stage);
+						LoginWindow login=new LoginWindow();
+						login.setStage(stage);
 						
 					}
 				} catch (Exception e1) {
-					Label noConnection=new Label("Can't connect to database");
-					noConnection.getStyleClass().add("warning");
-					grid.add(noConnection, 310, 285,200,100);
+					noConnection.setVisible(true);
 				}
 				
 			}
@@ -163,7 +172,8 @@ public class RegisterWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					LoginWindow.setStage(stage);
+        			LoginWindow login=new LoginWindow();
+					login.setStage(stage);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -192,7 +202,7 @@ public class RegisterWindow extends Application{
 	{	
 	}
 	
-	public static void sendRequest() throws IOException
+	public void sendRequest() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";

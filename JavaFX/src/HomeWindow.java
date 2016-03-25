@@ -19,23 +19,27 @@ import javafx.scene.layout.*;
 
 public class HomeWindow extends Application{
 	
-	protected static Label logo;
-	protected static Button addButton;
-	protected static Button listButton;
-	protected static Button recipesButton;
-	protected static int notificationsNum;
-	protected static Button notificationsButton;
+	protected Label logo;
+	protected Button addButton;
+	protected Button listButton;
+	protected Button recipesButton;
+	protected int notificationsNum;
+	protected Button notificationsButton;
+	protected Button shoppingButton;
+	protected Button updateButton;
 	
-	protected static String items;
-	protected static String session;
+	protected String items;
+	protected String list;
+	protected String info;
+	protected String session;
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
-	
-	public static void setStage(Stage stage,String s) throws Exception 
+	public void setStage(Stage stage,String s) throws Exception
 	{
+		System.gc();
 		session=s;
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
@@ -95,7 +99,8 @@ public class HomeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					AddWindow.setStage(stage,session);
+        			AddWindow add=new AddWindow();
+					add.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -119,7 +124,8 @@ public class HomeWindow extends Application{
 					e1.printStackTrace();
 				}
         		try {
-					ListWindow.setStage(stage,session,items);
+        			ListWindow list=new ListWindow();
+					list.setStage(stage,session,items);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -137,7 +143,8 @@ public class HomeWindow extends Application{
 			public void handle(ActionEvent event)
         	{
         		try {
-					RecipesWindow.setStage(stage,session);
+        			RecipesWindow recipes=new RecipesWindow();
+					recipes.setStage(stage,session);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -146,7 +153,60 @@ public class HomeWindow extends Application{
         });
     	recipesButton.setMinSize(250, 75);		
     	recipesButton.getStyleClass().add("menubutton");
-    	grid.add(recipesButton,275, 305, 250, 50);
+    	grid.add(recipesButton,275, 295, 250, 50);
+    	
+    	listButton=new Button("Shopping List");
+    	listButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+        			sendShoppingList();
+        			ShoppingListWindow shop=new ShoppingListWindow();
+					shop.setStage(stage,session,list);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+    	listButton.setMinSize(250,75);
+    	listButton.getStyleClass().add("menubutton");
+    	grid.add(listButton, 275, 370,250,50);
+    	
+    	Button close=new Button("X");
+    	close.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+        			stage.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+    	grid.add(close, 750, 460);
+    	
+    	updateButton=new Button("Update User Information");
+    	updateButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+        			sendUpdate();
+        			UpdateUserWindow update=new UpdateUserWindow();
+					update.setStage(stage,session,info);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+    	updateButton.setMinSize(275,50);
+    	updateButton.getStyleClass().add("menubutton");
+    	grid.add(updateButton, 0, 100,250,50);
     	
     	//Add in the bottom horizontal line
 		Separator line2=new Separator();
@@ -156,7 +216,6 @@ public class HomeWindow extends Application{
 		stage.setTitle("Kitchen Wizard -Home");
         stage.setScene(scene);
 	}
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -164,24 +223,64 @@ public class HomeWindow extends Application{
 	
 	//sendList which will send a request to the database to get the current list of items for the user
 		//returns all of the items and all of the information about them
-		public static void sendList() throws IOException
-		{
-			URL url=new URL("http://52.36.126.156:8080/");
-			String charset="UTF-8";
-			String command="getitems";
-			String sessionkey=session;
-			
-			String query=String.format("command=%s&sessionkey=%s&",
-					URLEncoder.encode(command,charset),
-					URLEncoder.encode(sessionkey,charset));
-			
-			URLConnection connection=new URL(url+"?"+query).openConnection();
-			connection.setRequestProperty("Accept-Charset", charset);
-			BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			while((inputLine=in.readLine())!=null)
-				items=inputLine;
-			System.out.println(items);
-			in.close();
-		}
+	public void sendList() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getitems";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			items=inputLine;
+		System.out.println(items);
+		in.close();
+	}
+	public void sendShoppingList() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getitems";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			list=inputLine;
+		System.out.println(list);
+		in.close();
+	}
+	public void sendUpdate() throws IOException
+	{
+		URL url=new URL("http://52.36.126.156:8080/");
+		String charset="UTF-8";
+		String command="getinfo";
+		String sessionkey=session;
+		
+		String query=String.format("command=%s&sessionkey=%s&",
+				URLEncoder.encode(command,charset),
+				URLEncoder.encode(sessionkey,charset));
+		
+		URLConnection connection=new URL(url+"?"+query).openConnection();
+		connection.setRequestProperty("Accept-Charset", charset);
+		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		while((inputLine=in.readLine())!=null)
+			info=inputLine;
+		System.out.println(info);
+		in.close();
+	}
 }

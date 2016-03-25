@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -16,33 +15,31 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
 import javafx.scene.layout.*;
 
 public class LoginWindow extends Application{
 
-	protected static TextField usernameField;
-    protected static PasswordField passwordField;
-    protected static Label usernameLabel;
-    protected static Label passwordLabel;
-    protected static Label login;
-	protected static Button confirm;
-	protected static Button register;
-	protected static Label wrongPass;
-	protected static Label noConnection;
+	protected TextField usernameField;
+    protected PasswordField passwordField;
+    protected Label usernameLabel;
+    protected Label passwordLabel;
+    protected Label login;
+	protected Button confirm;
+	protected Button register;
+	protected Label wrongPass;
+	protected Label noConnection;
 	
-	protected static Label logo;
+	protected Label logo;
 	
-	protected static String username;
-	protected static String password;
-	protected static String session="";
+	protected String username;
+	protected String password;
+	protected String session="";
 	
 	public static void main(String[] args) 
 	{
         launch(args);
     }
-	
-	public static void setStage(Stage stage) throws Exception 
+	public void setStage(Stage stage) throws Exception
 	{
 		GridPane grid=new GridPane();
 		grid.setPadding(new Insets(5,5,5,5));
@@ -94,40 +91,40 @@ public class LoginWindow extends Application{
 		passwordField=new PasswordField();
 		grid.add(passwordField, 455, 150,150,50);
 		
+		HomeWindow login=new HomeWindow();
 		confirm=new Button("Confirm");
 		confirm.setMinSize(125, 28);
 		confirm.setOnAction(new EventHandler<ActionEvent>()
+		{
+			public void handle(ActionEvent event)
+			{
+				username=usernameField.getText();
+				password=new String(passwordField.getText());
+				
+				System.out.println(username);
+				System.out.println(password);
+				try {
+					sendRequest();
+				} catch (IOException e1) {
+					noConnection.setVisible(true);
+				}
+				if(session.equals(""))
 				{
-					public void handle(ActionEvent event)
+					
+				} else if(session.equals("INVAILD_LOGIN"))
+				{
+					wrongPass.setVisible(true);
+				}else
+				{
+					try 
 					{
-						username=usernameField.getText();
-						password=new String(passwordField.getText());
-						
-						System.out.println(username);
-						System.out.println(password);
-						try {
-							sendRequest();
-						} catch (IOException e1) {
-							noConnection.setVisible(true);
-						}
-						if(session.equals(""))
-						{
-							if(!noConnection.isVisible())
-								wrongPass.setVisible(true);
-						} else if(session.equals("INVAILD_LOGIN"))
-						{
-							noConnection.setVisible(true);
-						}else
-						{
-							try 
-							{
-								HomeWindow.setStage(stage,session);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
+						login.setStage(stage,session);
+					} catch (Exception e) {
+						noConnection.setVisible(true);
 					}
-				});
+				}
+			}
+		});
 		confirm.getStyleClass().add("menubutton");
 		grid.add(confirm, 635, 148,100,50);
 		
@@ -138,7 +135,8 @@ public class LoginWindow extends Application{
 					public void handle(ActionEvent event) 
 					{
 						try {
-							RegisterWindow.setStage(stage);
+							RegisterWindow reg=new RegisterWindow();
+							reg.setStage(stage);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -161,14 +159,13 @@ public class LoginWindow extends Application{
 		stage.setTitle("Kitchen Wizard -Please Login");
         stage.setScene(scene);
 	}
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	public static void sendRequest() throws IOException
+	public void sendRequest() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
