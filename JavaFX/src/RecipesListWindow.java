@@ -47,6 +47,7 @@ public class RecipesListWindow extends Application{
 	 ArrayList addItems;
 	 String ingredients;
 	
+	 //Ingredients send like this ADULT BEVERAGE 1
 	public  void main(String[] args) 
 	{
         launch(args);
@@ -366,4 +367,5 @@ public class RecipesListWindow extends Application{
 			System.out.println(inputLine);
 		in.close();
 	}
+	
 }

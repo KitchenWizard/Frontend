@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -38,6 +40,9 @@ public class ExpandedRecipeWindow extends Application{
 	protected TextField cookField;
 	
 	protected  String groups;
+	protected static ComboBox itemsBox;
+	protected static TextField amount;
+	protected Button sendIngredients;
 	
 	protected  String session;
 	protected  String newitems;
@@ -150,16 +155,31 @@ public class ExpandedRecipeWindow extends Application{
 		cookField=new TextField(cook);
 		grid.add(cookField,350,250,100,30);
 		
-		ingredientsLabel=new Label(ingredients);
+		ingredientsLabel=new Label("Ingredients");
 		grid.add(ingredientsLabel, 250, 300,100,20);
 		
-		/*getGroups();
+		getGroups();
 		ObservableList<String> groupList=FXCollections.observableArrayList(groups.split(";"));
-		group=new Label("Group ID");
-		grid.add(group, 350,250,150,30);
-		groupBox=new ComboBox(groupList);
-		grid.add(groupBox, 500,250,200,30);
-		*/
+		System.out.println(groupList.get(0));
+		itemsBox=new ComboBox(groupList);
+		grid.add(itemsBox,350, 300, 100,30);
+		amount=new TextField();
+		grid.add(amount, 450, 300,100,30);
+		
+		sendIngredients=new Button("Send");
+		sendIngredients.setOnAction(new EventHandler<ActionEvent>()
+        {
+			public void handle(ActionEvent event)
+        	{
+        		try {
+        			sendCurrentIngredient();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+		grid.add(sendIngredients, 700, 300,75,30);
 		
 		confirm=new Button("Update");
 		confirm.setOnAction(new EventHandler<ActionEvent>()
@@ -251,13 +271,13 @@ public class ExpandedRecipeWindow extends Application{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
 		String sessionkey=session;
-		String command="updateitem";
+		String command="updaterecipe";
 		String nameupdate=nameField.getText();
-		String descriptionupdate=descriptionField.getText()+"%";
+		String descriptionupdate=descriptionField.getText();
 		String prepupdate=prepField.getText();
 		String cookupdate=cookField.getText();
 		String pid=id;
-		String query=String.format("command=%s&sessionkey=%s&percentused=%s&expiration=%s&id=%s&",
+		String query=String.format("command=%s&sessionkey=%s&name=%s&description=%s&preptime=%s&cooktime=%s&recipeid=%s&",
 				URLEncoder.encode(command,charset),
 				URLEncoder.encode(sessionkey,charset),
 				URLEncoder.encode(nameupdate,charset),
@@ -275,33 +295,41 @@ public class ExpandedRecipeWindow extends Application{
 		System.out.println(dbResponse);
 		in.close();
 	}
-	/*
-	public  void sendGroup() throws IOException
+	
+	public void sendCurrentIngredient() throws IOException
 	{
 		URL url=new URL("http://52.36.126.156:8080/");
 		String charset="UTF-8";
+		String command="updaterecipe";
+		String session1=session;
 		String sessionkey=session;
-		String command="updategroup";
-		String groupID=groupBox.getValue().toString();
-		groupID=groupID.replace("(", "");
+		String groupID=itemsBox.getValue().toString();
 		String[] groupIDArray=groupID.split(",");
-		System.out.println(groupIDArray[0]);
-		String grouptosend=groupIDArray[0].trim();
+		String grouptosend=groupIDArray[0];
+		grouptosend=grouptosend.trim();
+		grouptosend=grouptosend.replace("(", "");
+		String amount1=amount.getText();
+		String toSend=grouptosend+'`'+amount1;
+		String action="ADD";
+		String id1=id.trim();
 		
-		String query=String.format("command=%s&sessionkey=%s&groupid=%s&barcode=%s&",
+		
+		String query=String.format("command=%s&sessionkey=%s&groupid=%s&quantity=%s&itemaction=%s&recipeid=%s&",
 				URLEncoder.encode(command,charset),
-				URLEncoder.encode(sessionkey,charset),
-				URLEncoder.encode(grouptosend,charset));
+				URLEncoder.encode(session1,charset),
+				URLEncoder.encode(grouptosend,charset),
+				URLEncoder.encode(amount1,charset),
+				URLEncoder.encode(action,charset),
+				URLEncoder.encode(id1,charset));
 		
 		URLConnection connection=new URL(url+"?"+query).openConnection();
 		connection.setRequestProperty("Accept-Charset", charset);
 		BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		while((inputLine=in.readLine())!=null)
-			dbResponse=inputLine;
-		System.out.println(dbResponse);
+			System.out.println(inputLine);
 		in.close();
-	}*/
+	}
 	
 	//sendNotifications which will get the current list of notifications from the database
 	public void sendNotifications() throws IOException
