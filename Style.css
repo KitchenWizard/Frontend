@@ -31,6 +31,12 @@
 	-fx-font-family:"Helvetica";
 	-fox-font-weight:bold;
 }
+.list{
+	-fx-font-size:15px;
+	-fx-text-fill:black;
+	-fx-font-family:"Helvetica";
+	-fox-font-weight:bold;
+}
 .textfield {
     -fx-background-color: #ffffff;
     -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
